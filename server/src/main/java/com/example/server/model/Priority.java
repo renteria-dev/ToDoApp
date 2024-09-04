@@ -15,4 +15,13 @@ public enum Priority {
     public String toString() {
         return name();
     }
+    
+    public static String getPriorityDescription(Priority priority) {
+        return switch (priority) {
+            case HIGH -> "High";
+            case MEDIUM -> "Medium";
+            case LOW -> "Low";
+            default -> "";
+        };
+}
 }

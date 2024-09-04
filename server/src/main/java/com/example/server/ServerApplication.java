@@ -8,27 +8,31 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ServerApplication {
-
+    
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);
-
-        Todo myTodo = new Todo("1", "NEW", Priority.HIGH);
-
+        
+        Todo myTodo = new Todo(Long.valueOf(1), "NEW", "HIGH");
+        
         myTodo.setDueDate(LocalDate.of(2025, 2, 2));
-
+        
         System.out.println(myTodo);
-
+        
         myTodo.setDone(true);
-
+        
         System.out.println(myTodo);
-
+        
         myTodo.setDone(false);
-
+        
         System.out.println(myTodo);
-
+        
         myTodo.setText("NEWER");
-
+        
+        System.out.println(myTodo);
+        
+        myTodo.setText("LATEST NEWER");
+        
         System.out.println(myTodo);
     }
-
+    
 }

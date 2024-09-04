@@ -4,6 +4,8 @@
  */
 package com.example.server.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -13,18 +15,23 @@ import java.time.LocalDateTime;
  */
 public class Todo {
 
-    private String id;
+    private Long id;
     private String text;
-    private LocalDate dueDate;
-    private boolean done;
-    private LocalDate doneDate;
-    private Priority priority;
+    private String priority;
     private LocalDateTime creationDate;
 
-    public Todo(String id, String text, Priority priority) {
+    private boolean done;
+    private LocalDate dueDate;
+    private LocalDate doneDate;
+
+    @JsonCreator
+    public Todo(Long id, String text, String priority) {
         System.out.println(text);
-        if (text == null || text.length() > 120) {
+        if (validateText(text) == false) {
             throw new IllegalArgumentException("Text is not valid");
+        }
+        if (validatePriority(priority) == false) {
+            throw new IllegalArgumentException("Priority is not valid");
         }
         this.id = id;
         this.text = text;
@@ -33,9 +40,12 @@ public class Todo {
 
     }
 
-    public Todo(String id, String text, LocalDate dueDate, Priority priority) {
-        if (text == null || text.length() > 120) {
+    public Todo(Long id, String text, String priority, LocalDate dueDate) {
+        if (validateText(text) == false) {
             throw new IllegalArgumentException("Text is not valid");
+        }
+        if (validatePriority(priority) == false) {
+            throw new IllegalArgumentException("Priority is not valid");
         }
 
         this.id = id;
@@ -46,11 +56,11 @@ public class Todo {
 
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -64,6 +74,25 @@ public class Todo {
         } else {
             this.text = text;
         }
+    }
+
+    public final Boolean validatePriority(String priority) {
+        switch (priority) {
+            case "HIGH" -> {
+                return true;
+            }
+            case "MEDIUM" -> {
+                return true;
+            }
+            case "LOW" -> {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final Boolean validateText(String text) {
+        return !(text == null || text.length() > 120);
     }
 
     public LocalDate getDueDate() {
@@ -97,11 +126,11 @@ public class Todo {
         this.doneDate = doneDate;
     }
 
-    public Priority getPriority() {
+    public String getPriority() {
         return priority;
     }
 
-    public void setPriority(Priority priority) {
+    public void setPriority(String priority) {
         this.priority = priority;
     }
 
@@ -123,7 +152,8 @@ public class Todo {
                 + ", doneDate=" + doneDate
                 + ", priority=" + priority
                 + ", creationDate=" + creationDate
-                + '}';
+                + '}'
+                + "FIN";
     }
 
 }
