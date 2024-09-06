@@ -1,8 +1,7 @@
 package com.example.server;
 
-import com.example.server.model.Priority;
 import com.example.server.model.Todo;
-import java.time.LocalDate;
+import java.time.Instant;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -14,7 +13,7 @@ public class ServerApplication {
         
         Todo myTodo = new Todo(Long.valueOf(1), "NEW", "HIGH");
         
-        myTodo.setDueDate(LocalDate.of(2025, 2, 2));
+        myTodo.setDueDate(Instant.parse("2023-03-15T14:30:00.012Z"));
         
         System.out.println(myTodo);
         

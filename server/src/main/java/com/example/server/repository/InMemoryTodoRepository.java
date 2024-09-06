@@ -4,11 +4,11 @@
  */
 package com.example.server.repository;
 
+import com.example.server.model.Metric;
+import com.example.server.model.Pages;
 import com.example.server.model.Todo;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
@@ -41,8 +41,35 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
     }
 
     @Override
-    public List<Todo> findAll() {
-        return new ArrayList<>(db.values());
+    public HashMap<String, Object> findAll(int page) {
+        ArrayList todos = new ArrayList<>(db.values());
+        int limit = 10;
+
+        int numPages = todos.size() / limit;
+
+        if (numPages * limit < todos.size() || numPages == 0) {
+            numPages = numPages + 1;
+        }
+
+        if (page <= 0) {
+            page = 1;
+        }
+        if (page > numPages) {
+            page = numPages;
+        }
+
+        int start = (page - 1) * limit;
+        int end = Math.min((start + limit), todos.size());
+        System.out.println("s+limit:" + (start + limit));
+        System.out.println("size:" + todos.size());
+
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("todos", todos.subList(start, end));
+        response.put("pages", new Pages(numPages, page));
+        response.put("metrics", new Metric());
+
+        return response;
+
     }
 
     @Override
@@ -53,8 +80,9 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
 
     @Override
     public Todo setDone(Long id) {
-        db.get(id).setDone(true);
-        return db.get(id);
+       Todo todo = db.get(id);
+        if(todo!=null && todo.isDone()==false){todo.setDone(true);}
+        return todo;
     }
 
     @Override

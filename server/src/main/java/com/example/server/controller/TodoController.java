@@ -4,9 +4,13 @@
  */
 package com.example.server.controller;
 
+import com.example.server.model.Metric;
 import com.example.server.model.Todo;
 import com.example.server.service.TodoServiceInterface;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +33,15 @@ public class TodoController {
     }
 
     @GetMapping
-    public String getInfo() {
+    public String getStatus() {
         return "Server is running";
     }
 
     @GetMapping("/todos")
-    public List<Todo> getAllTodo() {
-        return todoService.getAllTodo();
+    public HashMap<String, Object> getPage(@RequestParam int page) {
+        HashMap<String, Object> response = todoService.getAllTodo(page);
+        
+        return response;
     }
 
     @GetMapping("/todos/{id}")
@@ -58,7 +64,6 @@ public class TodoController {
     public Todo updateTodoDone(@PathVariable Long id) {
 
         return todoService.setDone(id);
-        
 
     }
 
@@ -66,7 +71,6 @@ public class TodoController {
     public Todo updateTodoUnDone(@PathVariable Long id) {
 
         return todoService.setUnDone(id);
-        
 
     }
 

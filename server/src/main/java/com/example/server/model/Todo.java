@@ -6,8 +6,8 @@ package com.example.server.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 
 /**
  *
@@ -18,11 +18,11 @@ public class Todo {
     private Long id;
     private String text;
     private String priority;
-    private LocalDateTime creationDate;
+    private Instant creationDate;
 
     private boolean done;
-    private LocalDate dueDate;
-    private LocalDate doneDate;
+    private Instant dueDate;
+    private Instant doneDate;
 
     @JsonCreator
     public Todo(Long id, String text, String priority) {
@@ -36,11 +36,11 @@ public class Todo {
         this.id = id;
         this.text = text;
         this.priority = priority;
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = Instant.now();
 
     }
 
-    public Todo(Long id, String text, String priority, LocalDate dueDate) {
+    public Todo(Long id, String text, String priority, Instant dueDate) {
         if (validateText(text) == false) {
             throw new IllegalArgumentException("Text is not valid");
         }
@@ -52,7 +52,7 @@ public class Todo {
         this.text = text;
         this.dueDate = dueDate;
         this.priority = priority;
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = Instant.now();
 
     }
 
@@ -95,34 +95,34 @@ public class Todo {
         return !(text == null || text.length() > 120);
     }
 
-    public LocalDate getDueDate() {
+    public Instant getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(Instant dueDate) {
         this.dueDate = dueDate;
     }
 
     public boolean isDone() {
-        return done;
+        return this.done;
     }
 
     public void setDone(boolean done) {
         this.done = done;
 
         if (done) {
-            this.doneDate = LocalDate.now();
+            this.doneDate = Instant.now();
         } else {
             this.doneDate = null;
         }
 
     }
 
-    public LocalDate getDoneDate() {
+    public Instant getDoneDate() {
         return doneDate;
     }
 
-    public void setDoneDate(LocalDate doneDate) {
+    public void setDoneDate(Instant doneDate) {
         this.doneDate = doneDate;
     }
 
@@ -134,11 +134,11 @@ public class Todo {
         this.priority = priority;
     }
 
-    public LocalDateTime getCreationDate() {
+    public Instant getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(Instant creationDate) {
         this.creationDate = creationDate;
     }
 
