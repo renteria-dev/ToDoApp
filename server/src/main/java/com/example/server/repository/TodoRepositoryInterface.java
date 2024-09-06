@@ -4,12 +4,9 @@
  */
 package com.example.server.repository;
 
-import com.example.server.model.Metric;
 import com.example.server.model.Todo;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 /**

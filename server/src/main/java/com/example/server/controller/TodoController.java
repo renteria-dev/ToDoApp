@@ -4,13 +4,10 @@
  */
 package com.example.server.controller;
 
-import com.example.server.model.Metric;
 import com.example.server.model.Todo;
 import com.example.server.service.TodoServiceInterface;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -77,6 +74,11 @@ public class TodoController {
     @DeleteMapping("/todos/{id}")
     public Todo deleteTodoById(@PathVariable Integer id) {
         return todoService.deleteTodoById(Long.valueOf(id));
+    }
+    
+    @GetMapping("/error")
+    public String getError() {
+        return "404 not found";
     }
 
 }
