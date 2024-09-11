@@ -1,46 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import Todo from "../interfaces/Todo";
 
-// interface DialogContextProps{
-//   selectedItem: Todo | null;
-//   openEdit: boolean;
-//   openRemove: boolean;
-//   setSelectedItem: (item: Todo | null) => void;
-//   setOpenEdit: (open: boolean) => void;
-//   setOpenRemove: (open: boolean) => void;
-// }
-
-// const DialogContext = createContext<DialogContextProps | undefined>(
-//   undefined
-// );
-
-// export const useDialog = () => {
-//   const context = useContext(DialogContext);
-//   return context;
-// };
-
-// export function DialogProvider({ children }: { children: ReactNode }) {
-//   const [selectedItem, setSelectedItem] = useState<Todo | null>(null);
-//   const [openEdit, setOpenEdit] = useState(false);
-//   const [openRemove, setOpenRemove] = useState(false);
-//   return (
-//     <DialogContext.Provider
-//       value={{
-//         selectedItem,
-//         openEdit,
-//         openRemove,
-//         setSelectedItem,
-//         setOpenEdit,
-//         setOpenRemove,
-//       }}
-//     >
-//       {children}
-//     </DialogContext.Provider>
-//   );
-// }
-
-// import { createContext } from 'react';
-
 type DialogContextProviderProps = {
   children: React.ReactNode;
 };

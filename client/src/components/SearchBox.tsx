@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FormControl,
   InputLabel,
@@ -19,6 +19,8 @@ const SearchBox = () => {
     setFilterPriority("ALL");
     setFilterState("ALL");
   };
+
+  const [searchQuery, setSearchQuery] = useState("");
 
   const requestSearch = (searchedVal: string) => {
     console.log(searchedVal);
