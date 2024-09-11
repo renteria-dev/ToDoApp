@@ -1,10 +1,16 @@
-import React from "react";
+
 import TodoTable from "../components/TodoTable";
+import PaginationBar from "../components/PaginationBar";
+import MetricsBox from "../components/MetricsBox";
+import SearchBox from "../components/SearchBox";
 
 const MainPage = () => {
   return (
     <>
-      <TodoTable></TodoTable>
+      <SearchBox/>
+      <TodoTable />
+      <PaginationBar />
+      <MetricsBox />
     </>
   );
 };
