@@ -1,12 +1,44 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { Pagination, Paper, Typography } from "@mui/material";
-
+// import { useData } from "../hooks/useData";
+import getTodos from "../api/getTodos";
+import { useData } from "../hooks/useData";
+import { useEffect, useState } from "react";
+import ResponseProps from "../interfaces/ResponseProps";
 function PaginationBar() {
-  const [actualPage, setPage] = React.useState(1);
-  const [totalPages, setTotalPages] = React.useState(10);
-  const handleChange = (_event: any, value: React.SetStateAction<number>) => {
-    setPage(value);
+  const { pages, setPages, setRows } = useData();
+  const [data, setData] = useState<ResponseProps>();
+  const [value, setValue] = useState<number>(0);
+
+  useEffect(() => {
+    console.log("DATA:");
+    console.log(data);
+
+    getTodos(value || 1)
+      .then((d) => {
+        setData(d);
+
+        // Ayuda
+        if (data) {
+          setPages(data.pages);
+          setRows(data.todos);
+        } else {
+          console.log("");
+        }
+      })
+      .catch(console.error);
+  }, [value]);
+
+  const handleChange = async (_event: any, value: number) => {
+    setValue(value);
+    // const data = await getTodos(value);
+    // console.log(value);
+
+    // if (data.pages) {
+    //   setPages(data.pages);
+    //   setRows(data.todos);
+    // }
   };
   return (
     <Box
@@ -17,16 +49,14 @@ function PaginationBar() {
         padding: "1rem",
       }}
     >
-      
-        <Pagination
-          size={"large"}
-          count={totalPages}
-          page={actualPage}
-          onChange={handleChange}
-          variant={"outlined"}
-          shape={"rounded"}
-        />
-      
+      <Pagination
+        size={"large"}
+        count={pages.totalPages} //{pages.totalPages}
+        page={pages.actualPage} //{pages.totalPages}
+        onChange={handleChange}
+        variant={"outlined"}
+        shape={"rounded"}
+      />
     </Box>
   );
 }

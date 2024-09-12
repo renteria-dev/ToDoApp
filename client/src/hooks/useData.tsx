@@ -1,15 +1,18 @@
 import { createContext, useContext, useState } from "react";
 import Todo from "../interfaces/Todo";
 import Page from "../interfaces/Page";
-type dataContextProviderProps = {
+import Metrics from "../interfaces/Metrics";
+type DataContextProviderProps = {
   children: React.ReactNode;
 };
 
-type dataContextType = {
+type DataContextType = {
   rows: Todo[];
   setRows: (rows: Todo[]) => void;
   pages: Page;
   setPages: (pages: Page) => void;
+  metrics:Metrics;
+  setMetrics:(metrics:Metrics)=>void;
   searchQuery: string;
   setSearchQuery: (text: string) => void;
   filterPriority: string;
@@ -18,26 +21,29 @@ type dataContextType = {
   setFilterState: (text: string) => void;
 };
 
-export const dataContext = createContext({} as dataContextType);
+export const DataContext = createContext({} as DataContextType);
 
 export const useData = () => {
-    const context = useContext(dataContext);
+    const context = useContext(DataContext);
     return context;
   };
 
-export const dataContextProvider = ({ children }: dataContextProviderProps) => {
+export const DataContextProvider = ({ children }: DataContextProviderProps) => {
   const [rows, setRows] = useState<Todo[]>([]);
   const [pages, setPages] = useState<Page>( {actualPage:1,totalPages:1});
+  const [metrics, setMetrics] = useState<Metrics>({average:"",averageHigh:"",averageMedium:"",averageLow:""});
   const [searchQuery, setSearchQuery] = useState("");
   const [filterPriority, setFilterPriority] = useState("ALL");
   const [filterState, setFilterState] = useState("ALL");
   return (
-    <dataContext.Provider
+    <DataContext.Provider
       value={{
         rows,
         setRows,
         pages,
         setPages,
+        metrics,
+        setMetrics,
         searchQuery,
         setSearchQuery,
         filterPriority,
@@ -47,7 +53,7 @@ export const dataContextProvider = ({ children }: dataContextProviderProps) => {
       }}
     >
       {children}
-    </dataContext.Provider>
+    </DataContext.Provider>
   );
 };
 

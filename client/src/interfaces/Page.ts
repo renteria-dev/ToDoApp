@@ -1,5 +1,5 @@
 interface Page {
-  totalPages: Number;
-  actualPage: Number;
+  totalPages: number;
+  actualPage: number;
 }
 export default Page;

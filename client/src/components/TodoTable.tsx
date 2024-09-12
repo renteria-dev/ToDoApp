@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useEffect, useMemo, useState } from "react";
+
 import {
   Box,
   Paper,
@@ -15,7 +16,9 @@ import Todo from "../interfaces/Todo";
 import RemoveDialog from "./RemoveDialog";
 import EditDialog from "./EditDialog";
 import TodoRow from "./TodoRow";
-import { DialogContextProvider } from "../hooks/useDialog";
+import { DialogContextProvider, useDialog } from "../hooks/useDialog";
+import { useData } from "../hooks/useData";
+// import { useData } from "../hooks/useData";
 
 function createData(
   id: Number,
@@ -37,17 +40,17 @@ function createData(
   };
 }
 
-const rows = [
+const examples = [
   createData(1, "1Cupcake", "HIGH", null, false, "2025-04-04", null),
   createData(2, "2Cupcake", "HIGH", "2018-04-04", false, null, null),
   createData(3, "3Cupcake", "HIGH", null, false, "2025-03-04", null),
   createData(4, "4Cupcake", "HIGH", "2018-05-04", false, null, null),
-  // createData(5, "5Cupcake", "MEDIUM", "Fecha", true, null, null),
-  // createData(6, "6Cupcake", "MEDIUM", "Fecha", false, null, null),
-  // createData(7, "7Cupcake", "MEDIUM", "Fecha", true, null, null),
-  // createData(8, "8Cupcake", "LOW", "Fecha", false, null, null),
-  // createData(9, "9Cupcake", "LOW", "Fecha", true, null, null),
-  // createData(10, "10Cupcake", "LOW", "Fecha", false, null, null),
+  createData(5, "5Cupcake", "MEDIUM", "Fecha", true, null, null),
+  createData(6, "6Cupcake", "MEDIUM", "Fecha", false, null, null),
+  createData(7, "7Cupcake", "MEDIUM", "Fecha", true, null, null),
+  createData(8, "8Cupcake", "LOW", "Fecha", false, null, null),
+  createData(9, "9Cupcake", "LOW", "Fecha", true, null, null),
+  createData(10, "10Cupcake", "LOW", "Fecha", false, null, null),
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -157,12 +160,27 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-function TodoTable() {
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof Todo>("creationDate");
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+const TodoTable = () => {
+  const { rows } = useData();
+
+  const [order, setOrder] = useState<Order>("asc");
+  const [orderBy, setOrderBy] = useState<keyof Todo>("creationDate");
+  const [selected, setSelected] = useState<readonly number[]>([]);
+
+  const rowsPerPage = 10;
+  // const [rows, setRows] = useState<Todo[]>([]);
+  // useEffect(() => {
+  //     setRows(examples);
+
+  // }); // Use a flag to indicate when data is loaded
+
+  // const visibleRows = useMemo(
+  //   () =>
+  //     [...rows]
+  //       // .sort(getComparator(order, orderBy))
+  //       .slice(1 * rowsPerPage, 1 * rowsPerPage + rowsPerPage),
+  //   [order, orderBy, 1, rowsPerPage]
+  // );
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -173,25 +191,12 @@ function TodoTable() {
     setOrderBy(property);
   };
 
-  const handleChangePage = (_event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    10-rows.length;
-
-  const visibleRows = React.useMemo(
-    () =>
-      [...rows]
-        // .sort(getComparator(order, orderBy))
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage]
-  );
+  const emptyRows = 10 - rows.length;
 
   return (
-    <Box sx={{ width: "100%" }}  >
-      <Paper sx={{ width: "100%" }} >
+    <Box sx={{ width: "100%" }}>
+      <Paper sx={{ width: "100%" }}>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -207,7 +212,7 @@ function TodoTable() {
             />
             <TableBody>
               <DialogContextProvider>
-                {visibleRows.map((row, index) => (
+                {rows.map((row: Todo, index: number) => (
                   <TodoRow key={index} row={row} index={index} />
                 ))}
 
@@ -229,5 +234,5 @@ function TodoTable() {
       </Paper>
     </Box>
   );
-}
+};
 export default TodoTable;
