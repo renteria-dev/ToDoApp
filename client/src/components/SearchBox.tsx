@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Restore, Send } from "@mui/icons-material";
 import SearchBar from "./SearchBar";
+import { useData } from "../hooks/useData";
 
 const SearchBox = () => {
   const resetFilters = () => {
@@ -31,8 +32,7 @@ const SearchBox = () => {
     /* TODO on cancelSearch */
   };
 
-  const [filterPriority, setFilterPriority] = React.useState("ALL");
-  const [filterState, setFilterState] = React.useState("ALL");
+  const {filterPriority,filterState,setFilterPriority,setFilterState} =useData()
 
   const handleFilterPriority = (event: SelectChangeEvent) => {
     setFilterPriority(event.target.value);
@@ -44,18 +44,20 @@ const SearchBox = () => {
 
   return (
     <Box
+      component={Paper}
       sx={{
         display: "flex",
         padding: "1rem",
         alignItems: "center",
-        border: "1px solid",
-        borderColor: "divider",
-        borderRadius: 2,
+        // border: "1px solid",
+        // borderColor: "divider",
+        // borderRadius: "0",
         bgcolor: "background.paper",
         color: "text.secondary",
         "& svg": {
           m: 1,
         },
+        
       }}
     >
       <SearchBar

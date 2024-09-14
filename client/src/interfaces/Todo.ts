@@ -1,5 +1,5 @@
 interface Todo {
-  id: Number | null;
+  id: number | null;
   text: string;
   priority: string;
   creationDate: string | null;

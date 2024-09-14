@@ -63,10 +63,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
         autoComplete={autoComplete}
         onKeyDown={(event) => {
           console.log(event);
-          
-          if (event.key === "Enter"){
-             console.log('enter key was pressed');      
-       }}}
+
+          if (event.key === "Enter") {
+            console.log("enter key was pressed");
+          }
+        }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -75,20 +76,21 @@ const SearchBar: React.FC<SearchBarProps> = ({
           ),
           endAdornment: (
             <InputAdornment position="end">
-              {searchValue ? (
-                <ButtonBase
-                  onClick={clearSearch}
-                  sx={{
-                    borderRadius: "12px",
-                    padding: "5px",
-                    marginRight: "-5px",
-                  }}
-                >
+              <ButtonBase
+                onClick={clearSearch}
+                disabled={searchValue ? false : true}
+                sx={{
+                  borderRadius: "12px",
+                  padding: "5px",
+                  marginRight: "-5px",
+                }}
+              >
+                {searchValue.trim() !== "" ? (
                   <ClearIcon />
-                </ButtonBase>
-              ) : (
-                <></>
-              )}
+                ) : (
+                  <ClearIcon htmlColor="rgba(0,0,0,0)" />
+                )}
+              </ButtonBase>
             </InputAdornment>
           ),
         }}

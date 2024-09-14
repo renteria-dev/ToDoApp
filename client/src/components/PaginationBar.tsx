@@ -1,44 +1,25 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
-import { Pagination, Paper, Typography } from "@mui/material";
-// import { useData } from "../hooks/useData";
+import { Pagination } from "@mui/material";
 import getTodos from "../api/getTodos";
 import { useData } from "../hooks/useData";
 import { useEffect, useState } from "react";
-import ResponseProps from "../interfaces/ResponseProps";
 function PaginationBar() {
-  const { pages, setPages, setRows } = useData();
-  const [data, setData] = useState<ResponseProps>();
-  const [value, setValue] = useState<number>(0);
+  const { pages, setPages, setRows,updateData ,filterPriority,filterState} = useData();
+  const [clickedPage, setClickedPage] = useState<number>(1);
 
   useEffect(() => {
-    console.log("DATA:");
-    console.log(data);
-
-    getTodos(value || 1)
-      .then((d) => {
-        setData(d);
-
-        // Ayuda
-        if (data) {
-          setPages(data.pages);
-          setRows(data.todos);
-        } else {
-          console.log("");
+    getTodos(clickedPage,filterPriority,filterState)
+      .then((response) => {
+        if (response) {
+          setPages(response.pages);
+          setRows(response.todos);
         }
       })
       .catch(console.error);
-  }, [value]);
+  }, [clickedPage,updateData,filterPriority,filterState]);
 
-  const handleChange = async (_event: any, value: number) => {
-    setValue(value);
-    // const data = await getTodos(value);
-    // console.log(value);
-
-    // if (data.pages) {
-    //   setPages(data.pages);
-    //   setRows(data.todos);
-    // }
+  const handleChange = async (_event: any, clickedPage: number) => {
+    setClickedPage(clickedPage);
   };
   return (
     <Box
@@ -51,8 +32,8 @@ function PaginationBar() {
     >
       <Pagination
         size={"large"}
-        count={pages.totalPages} //{pages.totalPages}
-        page={pages.actualPage} //{pages.totalPages}
+        count={pages.totalPages}
+        page={pages.actualPage}
         onChange={handleChange}
         variant={"outlined"}
         shape={"rounded"}

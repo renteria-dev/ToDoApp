@@ -19,35 +19,76 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useDialog } from "../hooks/useDialog";
-function noop() {}
+import { useDialog } from "../../hooks/useDialog";
+import { AxiosError } from "axios";
+import putTodoEdit from "../../api/putTodoEdit";
+import Todo from "../../interfaces/Todo";
+import { useData } from "../../hooks/useData";
+
+function createData(
+  id: number,
+  text: string,
+  priority: string,
+  creationDate: string | null,
+  done: boolean,
+  dueDate: string | null,
+  doneDate: string | null
+): Todo {
+  return {
+    id,
+    text,
+    priority,
+    creationDate,
+    done,
+    dueDate,
+    doneDate,
+  };
+}
 
 function EditDialog() {
   const { openEdit, selectedItem, setSelectedItem, setOpenEdit } = useDialog();
+  const { updateData, setUpdateData } = useData();
   const [openSnack, setOpenSnack] = useState(false);
-  const closeDialog = () => {
-    setOpenEdit(false);
-    setSelectedItem(null);
-  };
+  const [error, setError] = useState<AxiosError | null>(null);
+
+  const [name, setName] = useState<string>();
+  const [priority, setPriority] = React.useState(
+    selectedItem?.priority || "MEDIUM"
+  );
+  const [dueDate, setDueDate] = useState<Dayjs | null>();
 
   const [checked, setChecked] = useState(
     selectedItem?.dueDate !== null && selectedItem?.dueDate !== undefined
   );
+  const resetEdited = () => {
+    setName(undefined);
+    setPriority("MEDIUM");
+    setDueDate(undefined);
+    setChecked(false);
+  };
+
   useEffect(() => {
     if (selectedItem !== undefined) {
+      setName(selectedItem?.text);
       setChecked(
         selectedItem?.dueDate !== null && selectedItem?.dueDate !== undefined
       );
     }
-  }, [selectedItem?.dueDate]);
+  }, [selectedItem]);
 
-  console.log(selectedItem?.dueDate, typeof selectedItem?.dueDate, checked);
+  // useEffect(() => {
+  //   if (selectedItem) {
+  //     setName(selectedItem?.text);
+  //   }
+  // }, [selectedItem]);
 
-  const [priority, setPriority] = React.useState(
-    selectedItem?.priority || "MEDIUM"
-  );
+  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setName(newName);
+    console.log(newName);
+  };
 
   const handlePriority = (event: SelectChangeEvent) => {
     setPriority(event.target.value);
@@ -55,6 +96,10 @@ function EditDialog() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
+  };
+
+  const handleChangeDueDate = (value: Dayjs | null) => {
+    setDueDate(value);
   };
 
   const handleCloseSnack = (
@@ -68,9 +113,47 @@ function EditDialog() {
     setOpenSnack(false);
   };
 
+  const closeDialog = () => {
+    setOpenEdit(false);
+    setSelectedItem(null);
+  };
+
   const alertRemoved = () => {
     setOpenSnack(true);
     closeDialog();
+  };
+
+  const handleEdit = () => {
+    setError(null);
+
+    if (selectedItem) {
+      let row;
+      if (selectedItem.id) {
+        row = createData(
+          selectedItem.id,
+          name || selectedItem.text,
+          priority || selectedItem.priority,
+          selectedItem.creationDate,
+          selectedItem.done,
+          checked ? dueDate?.toISOString() || selectedItem.dueDate : null,
+          selectedItem.dueDate
+        );
+      }
+      if (row && row.id) {
+        putTodoEdit(row.id, row)
+          .then(() => {
+            resetEdited();
+            setUpdateData(!updateData);
+          })
+          .catch((e) => {
+            setError(e);
+            console.log(e);
+
+            console.error;
+          })
+          .finally(alertRemoved);
+      }
+    }
   };
 
   return (
@@ -82,8 +165,8 @@ function EditDialog() {
             id=""
             label="Name"
             variant="outlined"
-            value={selectedItem?.text}
-            onChange={noop}
+            value={name}
+            onChange={handleChangeName}
           />
         </DialogTitle>
         <DialogContent>
@@ -115,13 +198,14 @@ function EditDialog() {
                     : dayjs().add(1, "day")
                 }
                 minDate={dayjs()}
+                onChange={handleChangeDueDate}
               />
             </LocalizationProvider>
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={alertRemoved} color="primary">
-            Edit and Save
+          <Button color="primary" onClick={handleEdit}>
+            Save changes
           </Button>
           <Button onClick={closeDialog} color="primary">
             Cancel
@@ -133,11 +217,24 @@ function EditDialog() {
         open={openSnack}
         autoHideDuration={5000}
         onClose={handleCloseSnack}
-        
       >
-        <Alert style={{ position: "relative" }} variant="filled" severity="success">
-          Item has been Edited.
-        </Alert>
+        {error ? (
+          <Alert
+            style={{ position: "relative" }}
+            variant="filled"
+            severity="error"
+          >
+            {error.message}
+          </Alert>
+        ) : (
+          <Alert
+            style={{ position: "relative" }}
+            variant="filled"
+            severity="success"
+          >
+            Task has been edited.
+          </Alert>
+        )}
       </Snackbar>
     </>
   );

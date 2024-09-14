@@ -19,6 +19,8 @@ type DataContextType = {
   setFilterPriority: (text: string) => void;
   filterState: string;
   setFilterState: (text: string) => void;
+  updateData:boolean;
+  setUpdateData:(update:boolean)=>void;
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -35,6 +37,7 @@ export const DataContextProvider = ({ children }: DataContextProviderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterPriority, setFilterPriority] = useState("ALL");
   const [filterState, setFilterState] = useState("ALL");
+  const [updateData, setUpdateData] = useState(false);
   return (
     <DataContext.Provider
       value={{
@@ -50,6 +53,9 @@ export const DataContextProvider = ({ children }: DataContextProviderProps) => {
         setFilterPriority,
         filterState,
         setFilterState,
+        updateData,
+        setUpdateData,
+
       }}
     >
       {children}

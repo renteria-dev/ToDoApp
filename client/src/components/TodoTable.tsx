@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import {
   Box,
+  Button,
   Paper,
   Table,
   TableBody,
@@ -13,15 +14,13 @@ import {
 } from "@mui/material";
 
 import Todo from "../interfaces/Todo";
-import RemoveDialog from "./RemoveDialog";
-import EditDialog from "./EditDialog";
+import RemoveDialog from "./dialogs/RemoveDialog";
+import EditDialog from "./dialogs/EditDialog";
 import TodoRow from "./TodoRow";
-import { DialogContextProvider, useDialog } from "../hooks/useDialog";
 import { useData } from "../hooks/useData";
-// import { useData } from "../hooks/useData";
 
 function createData(
-  id: Number,
+  id: number,
   text: string,
   priority: string,
   creationDate: string | null,
@@ -168,6 +167,11 @@ const TodoTable = () => {
   const [selected, setSelected] = useState<readonly number[]>([]);
 
   const rowsPerPage = 10;
+
+  
+  
+
+
   // const [rows, setRows] = useState<Todo[]>([]);
   // useEffect(() => {
   //     setRows(examples);
@@ -196,7 +200,9 @@ const TodoTable = () => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%" }}>
+      
+
+      <Paper sx={{ width: "100%" }} elevation={3}>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -211,14 +217,14 @@ const TodoTable = () => {
               rowCount={rows.length}
             />
             <TableBody>
-              <DialogContextProvider>
+              
                 {rows.map((row: Todo, index: number) => (
-                  <TodoRow key={index} row={row} index={index} />
+                  <TodoRow key={row.id} row={row} index={index} />
                 ))}
 
                 <EditDialog />
                 <RemoveDialog />
-              </DialogContextProvider>
+              
               {emptyRows > 0 && (
                 <TableRow
                   style={{
