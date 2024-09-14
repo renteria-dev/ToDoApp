@@ -15,11 +15,13 @@ import java.util.Optional;
  */
 public interface TodoRepositoryInterface {
 
-    Todo save(Todo todo);
+    Todo create(Todo todo);
+    
+    Optional<Todo> update(Todo todo);
 
     Optional<Todo> findById(Long id);
 
-    HashMap<String,Object> findAll(int page);
+    HashMap<String,Object> findAll(int page, String priority, String state);
 
     Todo deleteById(Long id);
 

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -25,12 +26,26 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
     private final AtomicLong idGen = new AtomicLong();
 
     @Override
-    public Todo save(Todo todo) {
-        if (todo.getId() == null) {
-            todo.setId(idGen.incrementAndGet());
-        }
+    public Todo create(Todo todo) {
+
+        todo.setId(idGen.incrementAndGet());
+
         db.put(todo.getId(), todo);
         return todo;
+
+    }
+
+    @Override
+    public Optional<Todo> update(Todo todo) {
+        Optional<Todo> older = findById(todo.getId());
+        if (older.isPresent()) {
+            older.get().setText(todo.getText());
+            older.get().setPriority(todo.getPriority());
+            older.get().setDueDate(todo.getDueDate());
+
+            return older;
+        }
+        return null;
 
     }
 
@@ -41,8 +56,25 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
     }
 
     @Override
-    public HashMap<String, Object> findAll(int page) {
-        ArrayList todos = new ArrayList<>(db.values());
+    public HashMap<String, Object> findAll(int page, String priority, String state) {
+        ArrayList todos;
+        if ("ALL".equals(priority) && "ALL".equals(state)) {
+
+            todos = new ArrayList<>(db.values());
+        } else {
+
+            todos = new ArrayList<>(db.values().stream()
+                    .filter(obj
+                            -> "ALL".equals(priority)
+                    || obj.getPriority().equals(priority))
+                    .filter(obj
+                            -> "ALL".equals(state)
+                    || (("DONE".equals(state)
+                    && obj.getDoneDate() != null))
+                    || (("UNDONE".equals(state)
+                    && obj.getDoneDate() == null)))
+                    .collect(Collectors.toList()));
+        }
         int limit = 10;
 
         int numPages = todos.size() / limit;
@@ -80,8 +112,10 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
 
     @Override
     public Todo setDone(Long id) {
-       Todo todo = db.get(id);
-        if(todo!=null && todo.isDone()==false){todo.setDone(true);}
+        Todo todo = db.get(id);
+        if (todo != null && todo.isDone() == false) {
+            todo.setDone(true);
+        }
         return todo;
     }
 

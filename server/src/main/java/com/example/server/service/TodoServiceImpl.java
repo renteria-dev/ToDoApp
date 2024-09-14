@@ -28,7 +28,7 @@ public class TodoServiceImpl implements TodoServiceInterface {
     @Override
     public Todo createTodo(Todo todo) {
         System.out.println(todo);
-        return todoRepository.save(todo);
+        return todoRepository.create(todo);
     }
 
     @Override
@@ -37,18 +37,22 @@ public class TodoServiceImpl implements TodoServiceInterface {
     }
 
     @Override
-    public HashMap<String,Object> getAllTodo(@RequestParam int page) {
+    public HashMap<String,Object> getAllTodo(int page,String priority, String state) {
 
-        HashMap<String,Object> response = todoRepository.findAll(page);
+        HashMap<String,Object> response = todoRepository.findAll(page,priority,state);
         return response;
     }
 
     @Override
-    public Todo updateTodo(Long id, Todo todo) {
+    public Optional<Todo> updateTodo(Long id, Todo todo) {
         Optional<Todo> oldTodo = todoRepository.findById(id);
         if (oldTodo.isPresent()) {
-            todo.setId(id);
-            return todoRepository.save(todo);
+            Todo older = oldTodo.get();
+            older.setPriority(todo.getPriority());
+            older.setText(todo.getText());
+            older.setDueDate(todo.getDueDate());
+            
+            return todoRepository.update(older);
         }
         return null;
 

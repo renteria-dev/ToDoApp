@@ -19,9 +19,9 @@ public interface TodoServiceInterface {
 
     Optional<Todo> getTodoById(Long id);
 
-    HashMap<String,Object> getAllTodo(int page);
+    HashMap<String,Object> getAllTodo(int page,String priority, String state);
 
-    Todo updateTodo(Long id, Todo todo);
+    Optional<Todo> updateTodo(Long id, Todo todo);
 
     Todo deleteTodoById(Long id);
     

@@ -7,7 +7,6 @@ package com.example.server.controller;
 import com.example.server.model.Todo;
 import com.example.server.service.TodoServiceInterface;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  */
 // This anotations tells Spring to handle HTTP requests and return JSON data
 @RestController
+@CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping("/api/v1")
 
 public class TodoController {
@@ -35,9 +35,16 @@ public class TodoController {
     }
 
     @GetMapping("/todos")
-    public HashMap<String, Object> getPage(@RequestParam int page) {
-        HashMap<String, Object> response = todoService.getAllTodo(page);
-        
+    public HashMap<String, Object> getPage(
+            @RequestParam("page") Optional<Integer> requestedPage,
+            @RequestParam("priority") Optional<String> requestedPriority,
+            @RequestParam("state") Optional<String> requestedState
+    ) {
+        int page = (int) requestedPage.orElse(1);
+        String priority = (String) requestedPriority.orElse("ALL");
+        String state = (String) requestedState.orElse("ALL");
+        HashMap<String, Object> response = todoService.getAllTodo(page,priority,state);
+
         return response;
     }
 
@@ -53,7 +60,7 @@ public class TodoController {
     }
 
     @PutMapping("/todos/{id}")
-    public Todo updateTodo(@PathVariable Long id, @RequestBody Todo todo) {
+    public Optional<Todo> updateTodo(@PathVariable Long id, @RequestBody Todo todo) {
         return todoService.updateTodo(id, todo);
     }
 
@@ -75,7 +82,7 @@ public class TodoController {
     public Todo deleteTodoById(@PathVariable Integer id) {
         return todoService.deleteTodoById(Long.valueOf(id));
     }
-    
+
     @GetMapping("/error")
     public String getError() {
         return "404 not found";
