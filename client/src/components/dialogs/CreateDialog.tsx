@@ -146,6 +146,7 @@ function CreateDialog() {
             variant="outlined"
             value={name}
             onChange={handleChangeName}
+            autoFocus
           />
         </DialogTitle>
         <DialogContent>

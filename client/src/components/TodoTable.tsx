@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
 import {
   Box,
-  Button,
   Paper,
   Table,
   TableBody,
@@ -168,16 +167,6 @@ const TodoTable = () => {
 
   const rowsPerPage = 10;
 
-  
-  
-
-
-  // const [rows, setRows] = useState<Todo[]>([]);
-  // useEffect(() => {
-  //     setRows(examples);
-
-  // }); // Use a flag to indicate when data is loaded
-
   // const visibleRows = useMemo(
   //   () =>
   //     [...rows]
@@ -195,13 +184,10 @@ const TodoTable = () => {
     setOrderBy(property);
   };
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = 10 - rows.length;
 
   return (
     <Box sx={{ width: "100%" }}>
-      
-
       <Paper sx={{ width: "100%" }} elevation={3}>
         <TableContainer>
           <Table
@@ -217,14 +203,13 @@ const TodoTable = () => {
               rowCount={rows.length}
             />
             <TableBody>
-              
-                {rows.map((row: Todo, index: number) => (
-                  <TodoRow key={row.id} row={row} index={index} />
-                ))}
+              {rows.map((row: Todo, index: number) => (
+                <TodoRow key={row.id} row={row} index={index} />
+              ))}
 
-                <EditDialog />
-                <RemoveDialog />
-              
+              <EditDialog />
+              <RemoveDialog />
+
               {emptyRows > 0 && (
                 <TableRow
                   style={{

@@ -16,8 +16,10 @@
     "@mui/icons-material": "^6.0.2",
     "@mui/material": "^6.0.2",
     "@mui/x-date-pickers": "^7.16.0",
+    "@types/humanize-duration": "^3.27.4",
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
+    "humanize-duration": "^3.32.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

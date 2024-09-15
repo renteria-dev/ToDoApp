@@ -7,7 +7,6 @@ import {
   SelectChangeEvent,
   Box,
   Button,
-  Grid2,
   IconButton,
   Paper,
 } from "@mui/material";
@@ -21,18 +20,27 @@ const SearchBox = () => {
     setFilterState("ALL");
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    updateData,
+    setUpdateData,
+    setSearchQuery,
+    filterPriority,
+    filterState,
+    setFilterPriority,
+    setFilterState,
+  } = useData();
 
   const requestSearch = (searchedVal: string) => {
     console.log(searchedVal);
+    setSearchQuery(searchedVal);
 
     /* TODO with searchedVal */
   };
   const cancelSearch = () => {
+    setSearchQuery("");
+    setUpdateData(!updateData)
     /* TODO on cancelSearch */
   };
-
-  const {filterPriority,filterState,setFilterPriority,setFilterState} =useData()
 
   const handleFilterPriority = (event: SelectChangeEvent) => {
     setFilterPriority(event.target.value);
@@ -40,6 +48,10 @@ const SearchBox = () => {
 
   const handleFilterState = (event: SelectChangeEvent) => {
     setFilterState(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    setUpdateData(!updateData);
   };
 
   return (
@@ -57,7 +69,6 @@ const SearchBox = () => {
         "& svg": {
           m: 1,
         },
-        
       }}
     >
       <SearchBar
@@ -70,6 +81,7 @@ const SearchBox = () => {
         size="small"
         startIcon={<Send />}
         sx={{ margin: "0 1rem 0 0", borderRadius: "0 8px 8px 0 " }}
+        onClick={handleSubmit}
       />
       <FormControl sx={{ m: 1, width: 200 }} size="small">
         <InputLabel id="demo-select-small-label">FilterPriority</InputLabel>

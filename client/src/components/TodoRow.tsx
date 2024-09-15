@@ -1,12 +1,23 @@
 import Todo from "../interfaces/Todo";
 import { Edit, Delete } from "@mui/icons-material";
-import { TableRow, TableCell, Checkbox, Box, Button, Snackbar, Alert, SnackbarCloseReason } from "@mui/material";
+import {
+  TableRow,
+  TableCell,
+  Checkbox,
+  Box,
+  Button,
+  Snackbar,
+  Alert,
+  SnackbarCloseReason,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { useDialog } from "../hooks/useDialog";
 import postTodoDone from "../api/postTodoDone";
 import putTodoUndone from "../api/putTodoUndone";
 import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
+import { useData } from "../hooks/useData";
+import getTodos from "../api/getTodos";
 
 interface TodoRowProps {
   row: Todo;
@@ -15,6 +26,7 @@ interface TodoRowProps {
 
 const TodoRow = ({ row, index }: TodoRowProps) => {
   const { setSelectedItem, setOpenEdit, setOpenRemove } = useDialog();
+  const { setUpdateData, updateData } = useData();
   const [visualChecked, setVisualChecked] = useState<boolean>(row.done);
 
   const [openSnack, setOpenSnack] = useState(false);
@@ -30,10 +42,8 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
   };
 
   useEffect(() => {
-    console.log(row.id+"RENDERIZED"+row.done);
-    
-  }, [visualChecked])
-  
+    console.log(row.id + "RENDERIZED" + row.done);
+  }, [visualChecked]);
 
   const handleClickedCheckBox = (row: Todo) => {
     if (visualChecked) {
@@ -41,32 +51,34 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
         putTodoUndone(row.id)
           .then((response) => {
             if (response) {
-              //row = response;
-              setVisualChecked(false)
+              setVisualChecked(false);
+              setUpdateData(!updateData);
             }
           })
           .catch((e) => {
             setError(e);
             console.log(e);
-  
+
             console.error;
-          }).finally(alertRemoved)
+          })
+          .finally(alertRemoved);
       }
     } else {
       if (row.id) {
         postTodoDone(row.id)
           .then((response) => {
             if (response) {
-              //row = response;
-              setVisualChecked(true)
+              setVisualChecked(true);
+              setUpdateData(!updateData);
             }
           })
           .catch((e) => {
             setError(e);
             console.log(e);
-  
+
             console.error;
-          }).finally(alertRemoved)
+          })
+          .finally(alertRemoved);
       }
     }
   };
@@ -83,10 +95,7 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
   };
   const alertRemoved = () => {
     setOpenSnack(true);
-    
   };
-
-  
 
   const labelId = `enhanced-table-checkbox-${row.id}`;
   return (
@@ -155,9 +164,11 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
           <Alert
             style={{ position: "relative" }}
             variant="filled"
-            severity={visualChecked?"success":"info"}
+            severity={visualChecked ? "success" : "info"}
           >
-            {visualChecked?"Task Done.":"Task Undone."}
+            Task
+            {" " + row.text + " "}
+            {visualChecked ? "Done" : "Undone"}
           </Alert>
         )}
       </Snackbar>
