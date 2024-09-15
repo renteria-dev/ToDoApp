@@ -19,7 +19,7 @@ public interface TodoServiceInterface {
 
     Optional<Todo> getTodoById(Long id);
 
-    HashMap<String,Object> getAllTodo(int page,String priority, String state);
+    HashMap<String,Object> getAllTodo(int page,String priority, String state,String search);
 
     Optional<Todo> updateTodo(Long id, Todo todo);
 

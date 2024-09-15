@@ -7,12 +7,17 @@ package com.example.server.repository;
 import com.example.server.model.Metric;
 import com.example.server.model.Pages;
 import com.example.server.model.Todo;
+import java.sql.DriverManager;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -29,6 +34,7 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
     public Todo create(Todo todo) {
 
         todo.setId(idGen.incrementAndGet());
+        todo.setCreationDate(Instant.now());
 
         db.put(todo.getId(), todo);
         return todo;
@@ -56,25 +62,27 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
     }
 
     @Override
-    public HashMap<String, Object> findAll(int page, String priority, String state) {
-        ArrayList todos;
-        if ("ALL".equals(priority) && "ALL".equals(state)) {
+    public HashMap<String, Object> findAll(int page, String priority, String state, String search) {
+        ArrayList<Todo> todos;
+        Stream<Todo> filteredStream = db.values().stream();
 
-            todos = new ArrayList<>(db.values());
-        } else {
-
-            todos = new ArrayList<>(db.values().stream()
-                    .filter(obj
-                            -> "ALL".equals(priority)
-                    || obj.getPriority().equals(priority))
-                    .filter(obj
-                            -> "ALL".equals(state)
-                    || (("DONE".equals(state)
-                    && obj.getDoneDate() != null))
-                    || (("UNDONE".equals(state)
-                    && obj.getDoneDate() == null)))
-                    .collect(Collectors.toList()));
+        if (!"ALL".equals(priority)) {
+            filteredStream = filteredStream.filter(obj -> obj.getPriority().equals(priority));
         }
+
+        if ("DONE".equals(state)) {
+            filteredStream = filteredStream.filter(obj -> obj.getDoneDate() != null);
+        } else if ("UNDONE".equals(state)) {
+            filteredStream = filteredStream.filter(obj -> obj.getDoneDate() == null);
+        }
+
+        if (!"".equals(search)) {
+            filteredStream = filteredStream.filter(obj -> obj.getText().contains(search));
+        }
+
+        todos = new ArrayList(filteredStream.collect(Collectors.toList()));
+
+        System.out.println(priority + state + search);
         int limit = 10;
 
         int numPages = todos.size() / limit;
@@ -98,7 +106,35 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
         HashMap<String, Object> response = new HashMap<>();
         response.put("todos", todos.subList(start, end));
         response.put("pages", new Pages(numPages, page));
-        response.put("metrics", new Metric());
+
+        Metric m = new Metric();
+
+        m.setAverageLow(db.values().stream()
+                .filter(obj-> obj.isDone() == true && obj.getPriority().equals("LOW"))
+                .mapToLong(obj -> obj.getDoneDate().getEpochSecond()
+                        - obj.getCreationDate().getEpochSecond())
+                .average().orElse(Double.NaN));
+        
+        m.setAverageMedium(db.values().stream()
+                .filter(obj -> obj.isDone() == true && obj.getPriority().equals("MEDIUM"))
+                .mapToLong(obj -> obj.getDoneDate().getEpochSecond() 
+                        - obj.getCreationDate().getEpochSecond())
+                .average().orElse(Double.NaN));
+        
+        m.setAverageHigh(db.values().stream()
+                .filter(obj -> obj.isDone() == true && obj.getPriority().equals("HIGH"))
+                .mapToLong(obj -> obj.getDoneDate().getEpochSecond() 
+                        - obj.getCreationDate().getEpochSecond())
+                .average().orElse(Double.NaN));
+        
+        m.setAverage(db.values().stream()
+                .filter(obj -> obj.isDone())
+                .mapToLong(obj -> obj.getDoneDate().getEpochSecond() 
+                        - obj.getCreationDate().getEpochSecond())
+                .average().orElse(Double.NaN));
+
+        System.out.println(m);
+        response.put("metrics", m);
 
         return response;
 

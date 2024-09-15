@@ -21,12 +21,14 @@ public interface TodoRepositoryInterface {
 
     Optional<Todo> findById(Long id);
 
-    HashMap<String,Object> findAll(int page, String priority, String state);
+    HashMap<String,Object> findAll(int page, String priority, String state,String search);
 
     Todo deleteById(Long id);
 
     Todo setDone(Long id);
 
     Todo setUnDone(Long id);
+    
+    
 
 }

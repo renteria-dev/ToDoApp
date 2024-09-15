@@ -37,9 +37,9 @@ public class TodoServiceImpl implements TodoServiceInterface {
     }
 
     @Override
-    public HashMap<String,Object> getAllTodo(int page,String priority, String state) {
+    public HashMap<String,Object> getAllTodo(int page,String priority, String state,String search) {
 
-        HashMap<String,Object> response = todoRepository.findAll(page,priority,state);
+        HashMap<String,Object> response = todoRepository.findAll(page,priority,state,search);
         return response;
     }
 

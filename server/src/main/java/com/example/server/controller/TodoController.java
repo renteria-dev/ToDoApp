@@ -38,12 +38,14 @@ public class TodoController {
     public HashMap<String, Object> getPage(
             @RequestParam("page") Optional<Integer> requestedPage,
             @RequestParam("priority") Optional<String> requestedPriority,
-            @RequestParam("state") Optional<String> requestedState
+            @RequestParam("state") Optional<String> requestedState,
+            @RequestParam("search") Optional<String> requestedSearch
     ) {
         int page = (int) requestedPage.orElse(1);
         String priority = (String) requestedPriority.orElse("ALL");
         String state = (String) requestedState.orElse("ALL");
-        HashMap<String, Object> response = todoService.getAllTodo(page,priority,state);
+        String search = (String) requestedSearch.orElse("");
+        HashMap<String, Object> response = todoService.getAllTodo(page,priority,state,search);
 
         return response;
     }

@@ -5,64 +5,63 @@
 package com.example.server.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import java.time.Instant;
 
 /**
  *
  * @author luis.renteria
  */
 public class Metric {
-
-    private Instant average;
-    private Instant averageHigh;
-    private Instant averageMedium;
-    private Instant averageLow;
+    private double average;
+    private double averageHigh;
+    private double averageMedium;
+    private double averageLow;
+  
     @JsonCreator
-
-    public Metric() {
-        this.average= Instant.now();
-        this.averageHigh=Instant.now();
-        this.averageMedium=Instant.now();
-        this.averageLow=Instant.now();       
-        /*
-        this.average = new Instant(new LocalDate(2000,0,0));
-        this.average = times;*/
+    public Metric()
+    {
         
-        
-    
-    
     }
 
-    public Instant getAverage() {
+    public double getAverage() {
         return average;
     }
 
-    public void setAverage(Instant average) {
+    public void setAverage(double average) {
         this.average = average;
     }
 
-    public Instant getAverageHigh() {
+    public double getAverageHigh() {
         return averageHigh;
     }
 
-    public void setAverageHigh(Instant averageHigh) {
+    public void setAverageHigh(double averageHigh) {
         this.averageHigh = averageHigh;
     }
 
-    public Instant getAverageMedium() {
+    public double getAverageMedium() {
         return averageMedium;
     }
 
-    public void setAverageMedium(Instant averageMedium) {
+    public void setAverageMedium(double averageMedium) {
         this.averageMedium = averageMedium;
     }
 
-    public Instant getAverageLow() {
+    public double getAverageLow() {
         return averageLow;
     }
 
-    public void setAverageLow(Instant averageLow) {
+    public void setAverageLow(double averageLow) {
         this.averageLow = averageLow;
+    }
+
+    @Override
+    public String toString() {
+        return "Todo{"
+                + "av='" + average + '\''
+                + ", low='" + averageLow + '\''
+                + ", med=" + averageMedium
+                + ", high=" + averageHigh
+                + '}';
     }
 
 }
