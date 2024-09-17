@@ -30,7 +30,9 @@ Before you run this proyect, you must have installed node.js, java 21 and maven.
 ### 1. Clone this repository
 
 ```bash
-git clone [https://github.com/renteria-dev/ToDoApp.git](https://github.com/renteria-dev/ToDoApp.git)
+git clone https://github.com/renteria-dev/ToDoApp.git
+```
+```bash
 cd ToDoApp
 ```
 
@@ -39,7 +41,7 @@ cd ToDoApp
 Navigate to ./server, build and run proyect with these commands:
 
 ```bash
-cd server
+ cd server
 ```
 
 ```bash
@@ -69,4 +71,9 @@ cd client
    npm run start
   ```
 
-By default, Frontend runs on port 8080. You need to open a web browser and go to ```http://localhost:8080```
+By default, Frontend runs on port 8080. You need to open a web browser and go to `http://localhost:8080`
+
+
+### Adittional Notes
+
+[Springboot plugin for Netbeans IDE](https://github.com/AlexFalappa/nb-springboot) was used to create the proyect.
