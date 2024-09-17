@@ -5,15 +5,18 @@ import SearchBox from "../components/SearchBox";
 import { DataContextProvider } from "../hooks/useData";
 import CreateTodoButton from "../components/CreateTodoButton";
 import { DialogContextProvider } from "../hooks/useDialog";
+import { SnackbarProvider } from "notistack";
 const MainPage = () => {
   return (
     <>
       <DataContextProvider>
         <SearchBox />
-        <DialogContextProvider>
-          <CreateTodoButton />
-          <TodoTable />
-        </DialogContextProvider>
+        <SnackbarProvider>
+          <DialogContextProvider>
+            <CreateTodoButton />
+            <TodoTable />
+          </DialogContextProvider>
+        </SnackbarProvider>
         <PaginationBar />
         <MetricsBox />
       </DataContextProvider>

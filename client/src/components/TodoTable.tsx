@@ -17,6 +17,7 @@ import RemoveDialog from "./dialogs/RemoveDialog";
 import EditDialog from "./dialogs/EditDialog";
 import TodoRow from "./TodoRow";
 import { useData } from "../hooks/useData";
+import { HourglassEmpty } from "@mui/icons-material";
 
 function createData(
   id: number,
@@ -210,13 +211,22 @@ const TodoTable = () => {
               <EditDialog />
               <RemoveDialog />
 
-              {emptyRows > 0 && (
+              {emptyRows == 10 && (
                 <TableRow
                   style={{
-                    height: 50 * emptyRows,
+                    height: 50 *3,
                   }}
                 >
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={6} align="center" sx={{fontSize:"1.5rem"}}>Empty</TableCell>
+                </TableRow>
+              )}
+              {emptyRows < 10 && (
+                <TableRow
+                  style={{
+                    height: 50 *emptyRows,
+                  }}
+                >
+                  <TableCell colSpan={6} ></TableCell>
                 </TableRow>
               )}
             </TableBody>

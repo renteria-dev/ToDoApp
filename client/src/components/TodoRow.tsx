@@ -1,23 +1,13 @@
 import Todo from "../interfaces/Todo";
 import { Edit, Delete } from "@mui/icons-material";
-import {
-  TableRow,
-  TableCell,
-  Checkbox,
-  Box,
-  Button,
-  Snackbar,
-  Alert,
-  SnackbarCloseReason,
-} from "@mui/material";
+import { TableRow, TableCell, Checkbox, Box, Button } from "@mui/material";
 import dayjs from "dayjs";
 import { useDialog } from "../hooks/useDialog";
 import postTodoDone from "../api/postTodoDone";
 import putTodoUndone from "../api/putTodoUndone";
 import { useEffect, useState } from "react";
-import { AxiosError } from "axios";
 import { useData } from "../hooks/useData";
-import getTodos from "../api/getTodos";
+import { useSnackbar } from "notistack";
 
 interface TodoRowProps {
   row: Todo;
@@ -27,10 +17,9 @@ interface TodoRowProps {
 const TodoRow = ({ row, index }: TodoRowProps) => {
   const { setSelectedItem, setOpenEdit, setOpenRemove } = useDialog();
   const { setUpdateData, updateData } = useData();
-  const [visualChecked, setVisualChecked] = useState<boolean>(row.done);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const [openSnack, setOpenSnack] = useState(false);
-  const [error, setError] = useState<AxiosError | null>(null);
+  const [visualChecked, setVisualChecked] = useState<boolean>(row.done);
 
   const openEditDialog = () => {
     setSelectedItem(row);
@@ -52,16 +41,16 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
           .then((response) => {
             if (response) {
               setVisualChecked(false);
+              enqueueSnackbar(`Task ${row.text} Undone`, { variant: "info" });
               setUpdateData(!updateData);
             }
           })
           .catch((e) => {
-            setError(e);
+            enqueueSnackbar(e.message, { variant: "error" });
             console.log(e);
 
             console.error;
-          })
-          .finally(alertRemoved);
+          });
       }
     } else {
       if (row.id) {
@@ -69,35 +58,22 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
           .then((response) => {
             if (response) {
               setVisualChecked(true);
+              enqueueSnackbar(`Task ${row.text} Done`, { variant: "success" });
+
               setUpdateData(!updateData);
             }
           })
           .catch((e) => {
-            setError(e);
+            enqueueSnackbar(e, { variant: "error" });
             console.log(e);
 
             console.error;
-          })
-          .finally(alertRemoved);
+          });
       }
     }
   };
 
-  const handleCloseSnack = (
-    _event: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSnack(false);
-  };
-  const alertRemoved = () => {
-    setOpenSnack(true);
-  };
-
-  const labelId = `enhanced-table-checkbox-${row.id}`;
+  const labelId = `enhanced-table-checkbox-${index}`;
   return (
     <>
       <TableRow
@@ -118,8 +94,21 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
             onClick={() => handleClickedCheckBox(row)}
           />
         </TableCell>
-        <TableCell component="th" id={labelId} scope="row" padding="none">
+        <TableCell
+          component="th"
+          id={labelId}
+          scope="row"
+          padding="none"
+          sx={{
+            textDecoration: visualChecked ? "line-through" : "none",
+            
+          }}
+          
+        >
+          &nbsp;
           {row.text}
+          &nbsp;
+        
         </TableCell>
         <TableCell align="center">{row.priority}</TableCell>
         <TableCell align="center">
@@ -147,31 +136,6 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
           </Box>
         </TableCell>
       </TableRow>
-      <Snackbar
-        open={openSnack}
-        autoHideDuration={5000}
-        onClose={handleCloseSnack}
-      >
-        {error ? (
-          <Alert
-            style={{ position: "relative" }}
-            variant="filled"
-            severity="error"
-          >
-            {error.message}
-          </Alert>
-        ) : (
-          <Alert
-            style={{ position: "relative" }}
-            variant="filled"
-            severity={visualChecked ? "success" : "info"}
-          >
-            Task
-            {" " + row.text + " "}
-            {visualChecked ? "Done" : "Undone"}
-          </Alert>
-        )}
-      </Snackbar>
     </>
   );
 };

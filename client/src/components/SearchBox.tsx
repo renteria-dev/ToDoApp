@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   FormControl,
   InputLabel,
@@ -38,7 +37,7 @@ const SearchBox = () => {
   };
   const cancelSearch = () => {
     setSearchQuery("");
-    setUpdateData(!updateData)
+    setUpdateData(!updateData);
     /* TODO on cancelSearch */
   };
 

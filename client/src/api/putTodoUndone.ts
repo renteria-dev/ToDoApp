@@ -1,5 +1,4 @@
-import axios, { isAxiosError, HttpStatusCode } from "axios";
-import ResponseProps from "../interfaces/ResponseProps";
+import axios from "axios";
 import Todo from "../interfaces/Todo";
 
 const putTodoUndone = async (id: number) => {

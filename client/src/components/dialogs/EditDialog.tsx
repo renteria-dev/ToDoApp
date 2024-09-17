@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import {
-  Alert,
-  Snackbar,
-  SnackbarCloseReason,
   TextField,
   FormControlLabel,
   Checkbox,
@@ -22,10 +19,10 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useDialog } from "../../hooks/useDialog";
-import { AxiosError } from "axios";
 import putTodoEdit from "../../api/putTodoEdit";
 import Todo from "../../interfaces/Todo";
 import { useData } from "../../hooks/useData";
+import { useSnackbar } from "notistack";
 
 function createData(
   id: number,
@@ -50,18 +47,17 @@ function createData(
 function EditDialog() {
   const { openEdit, selectedItem, setSelectedItem, setOpenEdit } = useDialog();
   const { updateData, setUpdateData } = useData();
-  const [openSnack, setOpenSnack] = useState(false);
-  const [error, setError] = useState<AxiosError | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState<string>();
   const [priority, setPriority] = React.useState(
     selectedItem?.priority || "MEDIUM"
   );
   const [dueDate, setDueDate] = useState<Dayjs | null>();
-
   const [checked, setChecked] = useState(
     selectedItem?.dueDate !== null && selectedItem?.dueDate !== undefined
   );
+
   const resetEdited = () => {
     setName(undefined);
     setPriority("MEDIUM");
@@ -78,12 +74,6 @@ function EditDialog() {
     }
   }, [selectedItem]);
 
-  // useEffect(() => {
-  //   if (selectedItem) {
-  //     setName(selectedItem?.text);
-  //   }
-  // }, [selectedItem]);
-
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
     setName(newName);
@@ -96,21 +86,12 @@ function EditDialog() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
+    console.log(event.target.checked);
+    
   };
 
   const handleChangeDueDate = (value: Dayjs | null) => {
     setDueDate(value);
-  };
-
-  const handleCloseSnack = (
-    _event: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSnack(false);
   };
 
   const closeDialog = () => {
@@ -118,16 +99,13 @@ function EditDialog() {
     setSelectedItem(null);
   };
 
-  const alertRemoved = () => {
-    setOpenSnack(true);
-    closeDialog();
-  };
-
   const handleEdit = () => {
-    setError(null);
-
     if (selectedItem) {
       let row;
+      console.log("PREENVIO");
+      console.log(checked,dueDate,selectedItem.dueDate);
+      
+      
       if (selectedItem.id) {
         row = createData(
           selectedItem.id,
@@ -135,23 +113,24 @@ function EditDialog() {
           priority || selectedItem.priority,
           selectedItem.creationDate,
           selectedItem.done,
-          checked ? dueDate?.toISOString() || selectedItem.dueDate : null,
-          selectedItem.dueDate
+          checked ? (dueDate? dueDate.toISOString() : selectedItem.dueDate ):null,
+          selectedItem.doneDate
         );
       }
       if (row && row.id) {
         putTodoEdit(row.id, row)
           .then(() => {
             resetEdited();
+            enqueueSnackbar("Task Edited", { variant: "success" });
             setUpdateData(!updateData);
+            closeDialog();
           })
           .catch((e) => {
-            setError(e);
+            enqueueSnackbar(e.message, { variant: "error" });
             console.log(e);
 
             console.error;
-          })
-          .finally(alertRemoved);
+          });
       }
     }
   };
@@ -193,9 +172,7 @@ function EditDialog() {
                 format="DD/MM/YYYY"
                 disabled={!checked}
                 defaultValue={
-                  selectedItem?.dueDate
-                    ? dayjs(selectedItem?.dueDate)
-                    : dayjs().add(1, "day")
+                   dayjs(selectedItem?.dueDate)
                 }
                 minDate={dayjs()}
                 onChange={handleChangeDueDate}
@@ -212,30 +189,6 @@ function EditDialog() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={openSnack}
-        autoHideDuration={5000}
-        onClose={handleCloseSnack}
-      >
-        {error ? (
-          <Alert
-            style={{ position: "relative" }}
-            variant="filled"
-            severity="error"
-          >
-            {error.message}
-          </Alert>
-        ) : (
-          <Alert
-            style={{ position: "relative" }}
-            variant="filled"
-            severity="success"
-          >
-            Task has been edited.
-          </Alert>
-        )}
-      </Snackbar>
     </>
   );
 }

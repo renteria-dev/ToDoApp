@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 
 import {
-  Alert,
-  Snackbar,
-  SnackbarCloseReason,
   TextField,
   FormControlLabel,
   Checkbox,
@@ -22,10 +19,10 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useDialog } from "../../hooks/useDialog";
-import { AxiosError } from "axios";
 import Todo from "../../interfaces/Todo";
 import postTodoCreate from "../../api/postTodoCreate";
 import { useData } from "../../hooks/useData";
+import { useSnackbar } from "notistack";
 
 function createData(
   id: number,
@@ -50,14 +47,13 @@ function createData(
 function CreateDialog() {
   const { openCreate, setOpenCreate } = useDialog();
   const { updateData, setUpdateData } = useData();
-
-  const [openSnack, setOpenSnack] = useState(false);
-  const [error, setError] = useState<AxiosError | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState<string>();
   const [priority, setPriority] = React.useState("MEDIUM");
   const [dueDate, setDueDate] = useState<Dayjs | null>();
   const [checked, setChecked] = useState(false);
+
   const resetCreate = () => {
     setName(undefined);
     setPriority("MEDIUM");
@@ -83,28 +79,11 @@ function CreateDialog() {
     setDueDate(value);
   };
 
-  const handleCloseSnack = (
-    _event: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSnack(false);
-  };
-
   const closeDialog = () => {
     setOpenCreate(false);
   };
 
-  const alertRemoved = () => {
-    setOpenSnack(true);
-    closeDialog();
-  };
-
   const handleCreate = () => {
-    setError(null);
     if (name && priority) {
       let row;
       if (checked && dueDate) {
@@ -123,15 +102,16 @@ function CreateDialog() {
       postTodoCreate(row)
         .then(() => {
           resetCreate();
+          enqueueSnackbar("Task Created Sucessfully", { variant: "success" });
+          closeDialog();
           setUpdateData(!updateData);
         })
         .catch((e) => {
-          setError(e);
+          enqueueSnackbar(e.message, { variant: "error" });
           console.log(e);
 
           console.error;
-        })
-        .finally(alertRemoved);
+        });
     }
   };
 
@@ -195,30 +175,6 @@ function CreateDialog() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={openSnack}
-        autoHideDuration={5000}
-        onClose={handleCloseSnack}
-      >
-        {error ? (
-          <Alert
-            style={{ position: "relative" }}
-            variant="filled"
-            severity="error"
-          >
-            {error.message}
-          </Alert>
-        ) : (
-          <Alert
-            style={{ position: "relative" }}
-            variant="filled"
-            severity="success"
-          >
-            Task has been created.
-          </Alert>
-        )}
-      </Snackbar>
     </>
   );
 }

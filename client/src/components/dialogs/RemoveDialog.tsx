@@ -1,64 +1,42 @@
-import React, { useState } from "react";
-
 import {
-  Alert,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Snackbar,
-  SnackbarCloseReason,
 } from "@mui/material";
 import { useDialog } from "../../hooks/useDialog";
 import Todo from "../../interfaces/Todo";
 import deleteTodo from "../../api/deleteTodo";
-import { AxiosError } from "axios";
 import { useData } from "../../hooks/useData";
+import { useSnackbar } from "notistack";
 
 function RemoveDialog() {
   const { openRemove, selectedItem, setSelectedItem, setOpenRemove } =
     useDialog();
   const { updateData, setUpdateData } = useData();
-  const [openSnack, setOpenSnack] = useState(false);
-  const [error, setError] = useState<AxiosError | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const closeDialog = () => {
     setOpenRemove(false);
     setSelectedItem(null);
   };
 
-  const handleCloseSnack = (
-    _event: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenSnack(false);
-  };
-
-  const alertRemoved = () => {
-    setOpenSnack(true);
-    closeDialog();
-  };
-
   const handleDelete = (row: Todo | null) => {
-    setError(null);
     if (row?.id) {
       deleteTodo(row.id)
         .then(() => {
+          enqueueSnackbar("Task Deleted", { variant: "success" });
+          closeDialog();
           setUpdateData(!updateData);
         })
         .catch((e) => {
-          setError(e);
+          enqueueSnackbar(e.message, { variant: "success" });
           console.log(e);
 
           console.error;
-        })
-        .finally(alertRemoved);
+        });
     }
   };
 
@@ -80,30 +58,6 @@ function RemoveDialog() {
           </Button>
         </DialogActions>
       </Dialog>
-
-      <Snackbar
-        open={openSnack}
-        autoHideDuration={5000}
-        onClose={handleCloseSnack}
-      >
-        {error ? (
-          <Alert
-            style={{ position: "relative" }}
-            variant="filled"
-            severity="error"
-          >
-            {error.message}
-          </Alert>
-        ) : (
-          <Alert
-            style={{ position: "relative" }}
-            variant="filled"
-            severity="success"
-          >
-            Task has been deleted.
-          </Alert>
-        )}
-      </Snackbar>
     </>
   );
 }

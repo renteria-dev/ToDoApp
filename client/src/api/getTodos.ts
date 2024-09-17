@@ -1,7 +1,12 @@
-import axios, { isAxiosError, HttpStatusCode } from "axios";
+import axios from "axios";
 import ResponseProps from "../interfaces/ResponseProps";
 
-const getTodos = async (page: number, priority: string, state: string,search:string) => {
+const getTodos = async (
+  page: number,
+  priority: string,
+  state: string,
+  search: string
+) => {
   let response: ResponseProps;
 
   try {
