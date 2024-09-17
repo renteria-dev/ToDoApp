@@ -27,7 +27,7 @@ public class TodoServiceImpl implements TodoServiceInterface {
 
     @Override
     public Todo createTodo(Todo todo) {
-        System.out.println(todo);
+        
         return todoRepository.create(todo);
     }
 

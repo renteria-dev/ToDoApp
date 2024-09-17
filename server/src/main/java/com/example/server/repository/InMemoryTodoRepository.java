@@ -82,7 +82,7 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
 
         todos = new ArrayList(filteredStream.collect(Collectors.toList()));
 
-        System.out.println(priority + state + search);
+        
         int limit = 10;
 
         int numPages = todos.size() / limit;
@@ -100,8 +100,7 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
 
         int start = (page - 1) * limit;
         int end = Math.min((start + limit), todos.size());
-        System.out.println("s+limit:" + (start + limit));
-        System.out.println("size:" + todos.size());
+        
 
         HashMap<String, Object> response = new HashMap<>();
         response.put("todos", todos.subList(start, end));
@@ -133,7 +132,7 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
                         - obj.getCreationDate().getEpochSecond())
                 .average().orElse(Double.NaN));
 
-        System.out.println(m);
+        
         response.put("metrics", m);
 
         return response;

@@ -26,7 +26,7 @@ public class Todo {
 
     @JsonCreator
     public Todo(Long id, String text, String priority) {
-        System.out.println(text);
+        
         if (validateText(text) == false) {
             throw new IllegalArgumentException("Text is not valid");
         }
