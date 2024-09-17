@@ -31,7 +31,7 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
   };
 
   useEffect(() => {
-    console.log(row.id + "RENDERIZED" + row.done);
+    //console.log(row.id + "RENDERIZED" + row.done);
   }, [visualChecked]);
 
   const handleClickedCheckBox = (row: Todo) => {
@@ -47,7 +47,7 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
           })
           .catch((e) => {
             enqueueSnackbar(e.message, { variant: "error" });
-            console.log(e);
+            //console.log(e);
 
             console.error;
           });
@@ -65,7 +65,7 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
           })
           .catch((e) => {
             enqueueSnackbar(e, { variant: "error" });
-            console.log(e);
+            //console.log(e);
 
             console.error;
           });

@@ -7,7 +7,7 @@ const postTodoCreate = async (item: Todo) => {
     let query = `http://localhost:9090/api/v1/todos`;
     const { data } = await axios.post(query, item);
     response = data;
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {

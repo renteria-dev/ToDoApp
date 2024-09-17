@@ -15,22 +15,22 @@ const getTodos = async (
     let addStateParam = `&state=${state}`;
     let addSearchParam = `&search=${search}`;
     if (priority !== "ALL") {
-      console.log(priority);
+      //console.log(priority);
       query = query + addPriorityParam;
-      console.log(query);
+      //console.log(query);
     }
     if (state !== "ALL") {
-      console.log(state);
+      //console.log(state);
       query = query + addStateParam;
     }
     if (search.trim() !== "") {
-      console.log(search);
+      //console.log(search);
       query = query + addSearchParam;
     }
 
     const { data } = await axios.get(query);
     response = data;
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {

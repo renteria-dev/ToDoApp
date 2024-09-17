@@ -10,7 +10,7 @@ import {
   Paper,
 } from "@mui/material";
 import { Restore, Send } from "@mui/icons-material";
-import SearchBar from "./SearchBar";
+import CustomSearchBar from "./CustomSearchBar";
 import { useData } from "../hooks/useData";
 
 const SearchBox = () => {
@@ -30,7 +30,7 @@ const SearchBox = () => {
   } = useData();
 
   const requestSearch = (searchedVal: string) => {
-    console.log(searchedVal);
+    //console.log(searchedVal);
     setSearchQuery(searchedVal);
 
     /* TODO with searchedVal */
@@ -70,7 +70,7 @@ const SearchBox = () => {
         },
       }}
     >
-      <SearchBar
+      <CustomSearchBar
         onChange={(searchVal) => requestSearch(searchVal)}
         onCancelSearch={() => cancelSearch()}
         placeholder="Search"

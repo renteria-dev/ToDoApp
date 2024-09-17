@@ -8,7 +8,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  SelectChangeEvent,
   Button,
   Dialog,
   DialogActions,
@@ -49,34 +48,16 @@ function CreateDialog() {
   const { updateData, setUpdateData } = useData();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [name, setName] = useState<string>();
+  const [name, setName] = useState<string>("");
   const [priority, setPriority] = React.useState("MEDIUM");
-  const [dueDate, setDueDate] = useState<Dayjs | null>();
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
   const [checked, setChecked] = useState(false);
 
   const resetCreate = () => {
-    setName(undefined);
+    setName("");
     setPriority("MEDIUM");
-    setDueDate(undefined);
+    setDueDate(null);
     setChecked(false);
-  };
-
-  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = e.target.value;
-    setName(newName);
-    console.log(newName);
-  };
-
-  const handlePriority = (event: SelectChangeEvent) => {
-    setPriority(event.target.value);
-  };
-
-  const handleChangeCheckBox = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
-
-  const handleChangeDueDate = (value: Dayjs | null) => {
-    setDueDate(value);
   };
 
   const closeDialog = () => {
@@ -84,7 +65,9 @@ function CreateDialog() {
   };
 
   const handleCreate = () => {
-    if (name && priority) {
+    //console.log(name,priority);
+
+    if (name && name?.length > 0 && name?.length <= 120) {
       let row;
       if (checked && dueDate) {
         row = createData(
@@ -108,10 +91,14 @@ function CreateDialog() {
         })
         .catch((e) => {
           enqueueSnackbar(e.message, { variant: "error" });
-          console.log(e);
+          //console.log(e);
 
           console.error;
         });
+    } else {
+      enqueueSnackbar("Maximum task name length is 120 characters", {
+        variant: "error",
+      });
     }
   };
 
@@ -120,13 +107,13 @@ function CreateDialog() {
       <Dialog open={openCreate} onClose={closeDialog} fullWidth>
         <DialogTitle>
           <TextField
+            autoFocus
             fullWidth
-            id=""
+            aria-modal
             label="Name"
             variant="outlined"
             value={name}
-            onChange={handleChangeName}
-            autoFocus
+            onChange={(e) => setName(e.target.value)}
           />
         </DialogTitle>
         <DialogContent>
@@ -135,7 +122,7 @@ function CreateDialog() {
             <Select
               fullWidth
               value={priority}
-              onChange={handlePriority}
+              onChange={(e) => setPriority(e.target.value)}
               label="Priority"
             >
               <MenuItem value={"LOW"}>LOW</MenuItem>
@@ -146,7 +133,10 @@ function CreateDialog() {
             <FormControlLabel
               label="Add due date"
               control={
-                <Checkbox checked={checked} onChange={handleChangeCheckBox} />
+                <Checkbox
+                  checked={checked}
+                  onChange={(e) => setChecked(e.target.checked)}
+                />
               }
             />
 
@@ -156,7 +146,7 @@ function CreateDialog() {
                 disabled={!checked}
                 value={dueDate}
                 minDate={dayjs()}
-                onChange={handleChangeDueDate}
+                onChange={(value) => setDueDate(value)}
               />
             </LocalizationProvider>
           </FormControl>

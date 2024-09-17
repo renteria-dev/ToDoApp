@@ -33,7 +33,7 @@ function RemoveDialog() {
         })
         .catch((e) => {
           enqueueSnackbar(e.message, { variant: "success" });
-          console.log(e);
+          //console.log(e);
 
           console.error;
         });

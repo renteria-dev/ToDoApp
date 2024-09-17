@@ -1,5 +1,5 @@
 import TodoTable from "../components/TodoTable";
-import PaginationBar from "../components/PaginationBar";
+import PaginationBox from "../components/PaginationBox";
 import MetricsBox from "../components/MetricsBox";
 import SearchBox from "../components/SearchBox";
 import { DataContextProvider } from "../hooks/useData";
@@ -17,7 +17,7 @@ const MainPage = () => {
             <TodoTable />
           </DialogContextProvider>
         </SnackbarProvider>
-        <PaginationBar />
+        <PaginationBox />
         <MetricsBox />
       </DataContextProvider>
     </>

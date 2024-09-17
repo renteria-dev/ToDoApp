@@ -8,7 +8,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  SelectChangeEvent,
   Button,
   Dialog,
   DialogActions,
@@ -49,50 +48,30 @@ function EditDialog() {
   const { updateData, setUpdateData } = useData();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [name, setName] = useState<string>();
+  const [name, setName] = useState<string>("");
   const [priority, setPriority] = React.useState(
     selectedItem?.priority || "MEDIUM"
   );
-  const [dueDate, setDueDate] = useState<Dayjs | null>();
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
   const [checked, setChecked] = useState(
     selectedItem?.dueDate !== null && selectedItem?.dueDate !== undefined
   );
 
   const resetEdited = () => {
-    setName(undefined);
+    setName("");
     setPriority("MEDIUM");
-    setDueDate(undefined);
+    setDueDate(null);
     setChecked(false);
   };
 
   useEffect(() => {
-    if (selectedItem !== undefined) {
+    if (selectedItem) {
       setName(selectedItem?.text);
       setChecked(
         selectedItem?.dueDate !== null && selectedItem?.dueDate !== undefined
       );
     }
   }, [selectedItem]);
-
-  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = e.target.value;
-    setName(newName);
-    console.log(newName);
-  };
-
-  const handlePriority = (event: SelectChangeEvent) => {
-    setPriority(event.target.value);
-  };
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-    console.log(event.target.checked);
-    
-  };
-
-  const handleChangeDueDate = (value: Dayjs | null) => {
-    setDueDate(value);
-  };
 
   const closeDialog = () => {
     setOpenEdit(false);
@@ -102,10 +81,9 @@ function EditDialog() {
   const handleEdit = () => {
     if (selectedItem) {
       let row;
-      console.log("PREENVIO");
-      console.log(checked,dueDate,selectedItem.dueDate);
-      
-      
+      //console.log("PREENVIO");
+      //console.log(checked,dueDate,selectedItem.dueDate);
+
       if (selectedItem.id) {
         row = createData(
           selectedItem.id,
@@ -113,7 +91,11 @@ function EditDialog() {
           priority || selectedItem.priority,
           selectedItem.creationDate,
           selectedItem.done,
-          checked ? (dueDate? dueDate.toISOString() : selectedItem.dueDate ):null,
+          checked
+            ? dueDate
+              ? dueDate.toISOString()
+              : selectedItem.dueDate
+            : null,
           selectedItem.doneDate
         );
       }
@@ -127,7 +109,7 @@ function EditDialog() {
           })
           .catch((e) => {
             enqueueSnackbar(e.message, { variant: "error" });
-            console.log(e);
+            //console.log(e);
 
             console.error;
           });
@@ -145,7 +127,7 @@ function EditDialog() {
             label="Name"
             variant="outlined"
             value={name}
-            onChange={handleChangeName}
+            onChange={(e) => setName(e.target.value)}
           />
         </DialogTitle>
         <DialogContent>
@@ -154,7 +136,7 @@ function EditDialog() {
             <Select
               fullWidth
               value={priority}
-              onChange={handlePriority}
+              onChange={(e) => setPriority(e.target.value)}
               label="Priority"
             >
               <MenuItem value={"LOW"}>LOW</MenuItem>
@@ -164,18 +146,21 @@ function EditDialog() {
 
             <FormControlLabel
               label="Add due date"
-              control={<Checkbox checked={checked} onChange={handleChange} />}
+              control={
+                <Checkbox
+                  checked={checked}
+                  onChange={(e) => setChecked(e.target.checked)}
+                />
+              }
             />
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 format="DD/MM/YYYY"
                 disabled={!checked}
-                defaultValue={
-                   dayjs(selectedItem?.dueDate)
-                }
+                defaultValue={dayjs(selectedItem?.dueDate)}
                 minDate={dayjs()}
-                onChange={handleChangeDueDate}
+                onChange={(value) => setDueDate(value)}
               />
             </LocalizationProvider>
           </FormControl>

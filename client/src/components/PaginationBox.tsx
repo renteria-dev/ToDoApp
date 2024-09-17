@@ -3,7 +3,7 @@ import { Pagination } from "@mui/material";
 import getTodos from "../api/getTodos";
 import { useData } from "../hooks/useData";
 import { useEffect, useState } from "react";
-function PaginationBar() {
+function PaginationBox() {
   const { setMetrics,pages, setPages, setRows,updateData ,filterPriority,filterState,searchQuery} = useData();
   const [clickedPage, setClickedPage] = useState<number>(1);
 
@@ -42,4 +42,4 @@ function PaginationBar() {
     </Box>
   );
 }
-export default PaginationBar;
+export default PaginationBox;

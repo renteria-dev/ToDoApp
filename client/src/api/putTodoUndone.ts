@@ -7,7 +7,7 @@ const putTodoUndone = async (id: number) => {
     let query = `http://localhost:9090/api/v1/todos/${id}/undone`;
     const { data } = await axios.put(query);
     response = data;
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {

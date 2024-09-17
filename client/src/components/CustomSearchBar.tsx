@@ -4,7 +4,7 @@ import { ButtonBase, InputAdornment, TextField } from "@mui/material";
 import { ClearIcon } from "@mui/x-date-pickers";
 import { SearchRounded } from "@mui/icons-material";
 
-interface SearchBarProps {
+interface CustomSearchBarProps {
   id?: string;
   value?: string;
   label?: string;
@@ -17,7 +17,7 @@ interface SearchBarProps {
   disabled?: boolean;
   debounceTime?: number;
 }
-const SearchBar: React.FC<SearchBarProps> = ({
+const CustomSearchBar: React.FC<CustomSearchBarProps> = ({
   id,
   value,
   label,
@@ -27,10 +27,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
   autoComplete,
   disabled,
   debounceTime,
-  ...props
 }) => {
   const [searchValue, setSearchValue] = React.useState(value || "");
-  const [dbTime, setDbTime] = React.useState(debounceTime || 0);
+  const [dbTime] = React.useState(debounceTime || 0);
   const clearSearch = () => {
     setSearchValue("");
     if (onCancelSearch) {
@@ -62,10 +61,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
         onChange={(e) => changeValue(e.target.value)}
         autoComplete={autoComplete}
         onKeyDown={(event) => {
-          console.log(event);
+          //console.log(event);
 
           if (event.key === "Enter") {
-            console.log("enter key was pressed");
+            //console.log("enter key was pressed");
           }
         }}
         InputProps={{
@@ -98,4 +97,4 @@ const SearchBar: React.FC<SearchBarProps> = ({
     </>
   );
 };
-export default SearchBar;
+export default CustomSearchBar;

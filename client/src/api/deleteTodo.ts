@@ -7,7 +7,7 @@ const deleteTodo = async (id: number) => {
     let query = `http://localhost:9090/api/v1/todos/${id}`;
     const { data } = await axios.delete(query);
     response = data;
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {

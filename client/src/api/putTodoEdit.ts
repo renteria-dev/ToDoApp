@@ -7,7 +7,7 @@ const putTodoEdit = async (id: number, item: Todo) => {
     let query = `http://localhost:9090/api/v1/todos/${id}`;
     const { data } = await axios.put(query, item);
     response = data;
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {

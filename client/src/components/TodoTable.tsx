@@ -17,64 +17,12 @@ import RemoveDialog from "./dialogs/RemoveDialog";
 import EditDialog from "./dialogs/EditDialog";
 import TodoRow from "./TodoRow";
 import { useData } from "../hooks/useData";
-import { HourglassEmpty } from "@mui/icons-material";
 
-function createData(
-  id: number,
-  text: string,
-  priority: string,
-  creationDate: string | null,
-  done: boolean,
-  dueDate: string | null,
-  doneDate: string | null
-): Todo {
-  return {
-    id,
-    text,
-    priority,
-    creationDate,
-    done,
-    dueDate,
-    doneDate,
-  };
-}
 
-const examples = [
-  createData(1, "1Cupcake", "HIGH", null, false, "2025-04-04", null),
-  createData(2, "2Cupcake", "HIGH", "2018-04-04", false, null, null),
-  createData(3, "3Cupcake", "HIGH", null, false, "2025-03-04", null),
-  createData(4, "4Cupcake", "HIGH", "2018-05-04", false, null, null),
-  createData(5, "5Cupcake", "MEDIUM", "Fecha", true, null, null),
-  createData(6, "6Cupcake", "MEDIUM", "Fecha", false, null, null),
-  createData(7, "7Cupcake", "MEDIUM", "Fecha", true, null, null),
-  createData(8, "8Cupcake", "LOW", "Fecha", false, null, null),
-  createData(9, "9Cupcake", "LOW", "Fecha", true, null, null),
-  createData(10, "10Cupcake", "LOW", "Fecha", false, null, null),
-];
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
 
 type Order = "asc" | "desc";
 
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 interface HeadCell {
   disablePadding: boolean;
@@ -164,17 +112,7 @@ const TodoTable = () => {
 
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<keyof Todo>("creationDate");
-  const [selected, setSelected] = useState<readonly number[]>([]);
-
-  const rowsPerPage = 10;
-
-  // const visibleRows = useMemo(
-  //   () =>
-  //     [...rows]
-  //       // .sort(getComparator(order, orderBy))
-  //       .slice(1 * rowsPerPage, 1 * rowsPerPage + rowsPerPage),
-  //   [order, orderBy, 1, rowsPerPage]
-  // );
+  const [selected] = useState<readonly number[]>([]);
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -223,7 +161,7 @@ const TodoTable = () => {
               {emptyRows < 10 && (
                 <TableRow
                   style={{
-                    height: 50 *emptyRows,
+                    height: 50.5 *emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} ></TableCell>
