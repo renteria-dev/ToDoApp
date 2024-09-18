@@ -1,13 +1,21 @@
 import Todo from "../interfaces/Todo";
 import { Edit, Delete } from "@mui/icons-material";
-import { TableRow, TableCell, Checkbox, Box, Button } from "@mui/material";
-import dayjs from "dayjs";
+import {
+  TableRow,
+  TableCell,
+  Checkbox,
+  Box,
+  Button,
+  alpha,
+} from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
 import { useDialog } from "../hooks/useDialog";
 import postTodoDone from "../api/postTodoDone";
 import putTodoUndone from "../api/putTodoUndone";
 import { useEffect, useState } from "react";
 import { useData } from "../hooks/useData";
 import { useSnackbar } from "notistack";
+import { green, red, yellow } from "@mui/material/colors";
 
 interface TodoRowProps {
   row: Todo;
@@ -73,15 +81,35 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
     }
   };
 
+  function calculateColor(date: Dayjs) {
+    const today = dayjs();
+    const givenDate = dayjs(date);
+    const differenceInDays = today.diff(givenDate, "day");
+
+    if (!givenDate.isValid) {
+      return "background";
+    }
+
+    if (-differenceInDays < 7) {
+      return alpha(red["A400"], 0.2);
+    } else if (-differenceInDays >= 7 && -differenceInDays < 14) {
+      return alpha(yellow["A700"], 0.3);
+    } else if (-differenceInDays >= 14) {
+      return alpha(green["A700"], 0.3);
+    }
+  }
+
   const labelId = `enhanced-table-checkbox-${index}`;
   return (
     <>
       <TableRow
-        hover
         role="checkbox"
         tabIndex={-1}
         key={row.id}
-        sx={{ cursor: "pointer" }}
+        sx={{
+          cursor: "pointer",
+          backgroundColor: calculateColor(dayjs(row.dueDate)),
+        }}
       >
         <TableCell align="center"></TableCell>
         <TableCell align="left" padding="none">
@@ -101,14 +129,11 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
           padding="none"
           sx={{
             textDecoration: visualChecked ? "line-through" : "none",
-            
           }}
-          
         >
           &nbsp;
           {row.text}
           &nbsp;
-        
         </TableCell>
         <TableCell align="center">{row.priority}</TableCell>
         <TableCell align="center">
