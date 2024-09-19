@@ -4,7 +4,7 @@ import { Box, Button } from "@mui/material";
 import { useDialog } from "../hooks/useDialog";
 
 const CreateTodoButton = () => {
-  const { setOpenCreate } = useDialog();
+  const { setOpenCreate, openCreate } = useDialog();
   const openCreateDialog = () => {
     setOpenCreate(true);
   };
@@ -20,14 +20,13 @@ const CreateTodoButton = () => {
         sx={{
           borderRadius: "8px 8px 0 0",
           fontWeight: "bold",
-          boxShadow: "none",
+          // boxShadow: "none",
         }}
         onClick={openCreateDialog}
       >
         New Todo
       </Button>
-
-      <CreateDialog />
+      {openCreate && <CreateDialog />}
     </>
   );
 };
