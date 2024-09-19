@@ -64,52 +64,88 @@ function CreateDialog() {
     setOpenCreate(false);
   };
 
+  function validateName(text: string) {
+    if (!text) {
+      enqueueSnackbar("Task Name is empty", {
+        variant: "error",
+      });
+      return false;
+    }
+    if (text.trim().length == 0) {
+      enqueueSnackbar("Task Name is empty", {
+        variant: "error",
+      });
+      return false;
+    }
+    if (text.length > 120) {
+      enqueueSnackbar("Maximum size of task name is 120 characters", {
+        variant: "error",
+      });
+      return false;
+    }
+    return true;
+  }
+
+  function validateDate(date: Dayjs | null) {
+    if (!date) {
+      enqueueSnackbar("Due Date is empty", {
+        variant: "error",
+      });
+      return false;
+    }
+
+    return true;
+  }
+
   const handleCreate = () => {
     //console.log(name,priority);
 
-    if (name && name?.length > 0 && name?.length <= 120) {
+    if (validateName(name)) {
       let row;
-      if (checked && dueDate) {
-        row = createData(
-          0,
-          name,
-          priority,
-          null,
-          false,
-          dueDate.toISOString(),
-          null
-        );
+      if (checked) {
+        if (validateDate(dueDate) && dueDate) {
+          row = createData(
+            0,
+            name,
+            priority,
+            null,
+            false,
+            dueDate.toISOString(),
+            null
+          );
+        }
       } else {
         row = createData(0, name, priority, null, false, null, null);
       }
-      postTodoCreate(row)
-        .then(() => {
-          resetCreate();
-          enqueueSnackbar("Task Created Sucessfully", { variant: "success" });
-          closeDialog();
-          setUpdateData(!updateData);
-        })
-        .catch((e) => {
-          enqueueSnackbar(e.message, { variant: "error" });
-          //console.log(e);
+      if (row)
+        postTodoCreate(row)
+          .then(() => {
+            resetCreate();
+            enqueueSnackbar("Task Created Sucessfully", { variant: "success" });
+            closeDialog();
+            setUpdateData(!updateData);
+          })
+          .catch((e) => {
+            enqueueSnackbar(e.message, { variant: "error" });
+            //console.log(e);
 
-          console.error;
-        });
-    } else {
-      enqueueSnackbar("Maximum task name length is 120 characters", {
-        variant: "error",
-      });
+            console.error;
+          });
     }
   };
 
   return (
     <>
-      <Dialog open={openCreate} onClose={closeDialog} fullWidth>
+      <Dialog
+        open={openCreate}
+        onClose={closeDialog}
+        fullWidth
+        disableRestoreFocus
+      >
         <DialogTitle>
           <TextField
             autoFocus
             fullWidth
-            aria-modal
             label="Name"
             variant="outlined"
             value={name}
