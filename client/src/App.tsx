@@ -6,37 +6,49 @@ import {
 } from "@mui/material/styles";
 import MainPage from "./pages/MainPage";
 import "./App.css";
-import { Button, CssBaseline } from "@mui/material";
+import { Button, CssBaseline, GlobalStyles } from "@mui/material";
 import { InvertColors } from "@mui/icons-material";
+
 function MyApp() {
   const { mode, setMode } = useColorScheme();
 
   return (
-    <Box
-      sx={{
-        display: "inherit",
-        width: "100%",
-        alignItems: "center",
-        justifyContent: "center",
-        bgcolor: "background.darker",
-        color: "text.primary",
-        borderRadius: 1,
-        p: 3,
-        minHeight: "56px",
-      }}
-    >
-      <MainPage />
-      <Box position={"fixed"} bottom={0} right={"5%"}>
-        <Button
-          color="inherit"
-          variant="contained"
-          sx={{ borderRadius: "8px 8px 0 0", boxShadow: "none", float: "left" }}
-          onClick={() => setMode(mode == "light" ? "dark" : "light")}
-        >
-          <InvertColors />
-        </Button>
+    <>
+      <GlobalStyles
+        styles={{
+          body: { backgroundColor: mode == "light" ? "#ffb600" : "black" },
+        }}
+      />
+      <Box
+        sx={{
+          display: "inherit",
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: "inherit",
+          color: "text.primary",
+          borderRadius: 1,
+          p: 3,
+          minHeight: "56px",
+        }}
+      >
+        <MainPage />
+        <Box position={"fixed"} bottom={0} right={"5%"}>
+          <Button
+            color="inherit"
+            variant="contained"
+            sx={{
+              borderRadius: "8px 8px 0 0",
+              boxShadow: "none",
+              float: "left",
+            }}
+            onClick={() => setMode(mode == "light" ? "dark" : "light")}
+          >
+            <InvertColors />
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 

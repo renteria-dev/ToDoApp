@@ -129,6 +129,11 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
           padding="none"
           sx={{
             textDecoration: visualChecked ? "line-through" : "none",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: 150,
+            minWidth: 150,
+            textWrap: "nowrap",
           }}
         >
           &nbsp;
