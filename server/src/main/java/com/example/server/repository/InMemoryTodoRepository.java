@@ -77,7 +77,7 @@ public class InMemoryTodoRepository implements TodoRepositoryInterface {
         }
 
         if (!"".equals(search)) {
-            filteredStream = filteredStream.filter(obj -> obj.getText().contains(search));
+            filteredStream = filteredStream.filter(obj -> obj.getText().toLowerCase().contains(search.toLowerCase()));
         }
 
         todos = new ArrayList(filteredStream.collect(Collectors.toList()));
