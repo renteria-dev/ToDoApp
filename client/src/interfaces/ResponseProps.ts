@@ -4,7 +4,7 @@ import Todo from "./Todo";
 
 interface ResponseProps {
   pages: Page;
-  todos: Todo[];
+  content: Todo[];
   metrics: Metrics;
 }
 

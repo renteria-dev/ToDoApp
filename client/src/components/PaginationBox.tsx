@@ -21,7 +21,7 @@ function PaginationBox() {
       .then((response) => {
         if (response) {
           setPages(response.pages);
-          setRows(response.todos);
+          setRows(response.content);
           setMetrics(response.metrics);
         }
       })
