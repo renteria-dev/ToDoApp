@@ -18,11 +18,7 @@ import EditDialog from "./dialogs/EditDialog";
 import TodoRow from "./TodoRow";
 import { useData } from "../hooks/useData";
 
-
-
-
 type Order = "asc" | "desc";
-
 
 interface HeadCell {
   disablePadding: boolean;
@@ -152,19 +148,25 @@ const TodoTable = () => {
               {emptyRows == 10 && (
                 <TableRow
                   style={{
-                    height: 50 *3,
+                    height: 50 * 3,
                   }}
                 >
-                  <TableCell colSpan={6} align="center" sx={{fontSize:"1.5rem"}}>Empty</TableCell>
+                  <TableCell
+                    colSpan={6}
+                    align="center"
+                    sx={{ fontSize: "1.5rem" }}
+                  >
+                    Empty
+                  </TableCell>
                 </TableRow>
               )}
               {emptyRows < 10 && (
                 <TableRow
                   style={{
-                    height: 50.5 *emptyRows,
+                    height: 50.5 * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={6} ></TableCell>
+                  <TableCell colSpan={6}></TableCell>
                 </TableRow>
               )}
             </TableBody>
