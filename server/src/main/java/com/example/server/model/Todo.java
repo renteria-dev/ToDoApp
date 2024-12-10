@@ -5,8 +5,6 @@
 package com.example.server.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.Instant;
 import java.time.Instant;
 
 /**
