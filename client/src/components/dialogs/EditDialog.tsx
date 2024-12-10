@@ -67,6 +67,7 @@ function EditDialog() {
   useEffect(() => {
     if (selectedItem) {
       setName(selectedItem?.text);
+      setPriority(selectedItem?.priority);
       setChecked(
         selectedItem?.dueDate !== null && selectedItem?.dueDate !== undefined
       );
