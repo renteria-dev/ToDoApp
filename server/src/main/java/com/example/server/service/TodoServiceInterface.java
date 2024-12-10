@@ -4,9 +4,9 @@
  */
 package com.example.server.service;
 
+import com.example.server.model.PaginatedResponse;
 import com.example.server.model.Todo;
-import java.util.HashMap;
-import java.util.List;
+import com.example.server.model.TodoFilter;
 import java.util.Optional;
 
 /**
@@ -15,18 +15,18 @@ import java.util.Optional;
  */
 public interface TodoServiceInterface {
 
+    
     Todo createTodo(Todo todo);
 
     Optional<Todo> getTodoById(Long id);
 
-    HashMap<String,Object> getAllTodo(int page,String priority, String state,String search);
+    PaginatedResponse<Todo> getAllTodo(TodoFilter filter);
 
     Optional<Todo> updateTodo(Long id, Todo todo);
 
-    Todo deleteTodoById(Long id);
-    
-    Todo setDone(Long id);
+    Optional<Todo> deleteTodoById(Long id);
 
-    Todo setUnDone(Long id);
+    Optional<Todo> updateTodoStatus(Long id, boolean done);
+
 
 }

@@ -4,13 +4,14 @@
  */
 package com.example.server.service;
 
+import com.example.server.model.Pages;
+import com.example.server.model.PaginatedResponse;
 import com.example.server.model.Todo;
+import com.example.server.model.TodoFilter;
 import com.example.server.repository.TodoRepositoryInterface;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -21,13 +22,12 @@ public class TodoServiceImpl implements TodoServiceInterface {
 
     private final TodoRepositoryInterface todoRepository;
 
-    public TodoServiceImpl(TodoRepositoryInterface todoRepositoryInterface) {
-        this.todoRepository = todoRepositoryInterface;
+    public TodoServiceImpl(TodoRepositoryInterface todoRepository) {
+        this.todoRepository = todoRepository;
     }
 
     @Override
     public Todo createTodo(Todo todo) {
-        
         return todoRepository.create(todo);
     }
 
@@ -37,40 +37,63 @@ public class TodoServiceImpl implements TodoServiceInterface {
     }
 
     @Override
-    public HashMap<String,Object> getAllTodo(int page,String priority, String state,String search) {
+    public PaginatedResponse<Todo> getAllTodo(TodoFilter filter) {
+        List<Todo> todos = todoRepository.findAll(filter, PaginatedResponse.PAGE_SIZE);
+        long totalItems = todoRepository.count(filter);
+        int totalPages = (int) Math.ceil((double) totalItems / PaginatedResponse.PAGE_SIZE);
+        if (totalPages == 0) {
+            totalPages = 1;
+        }
 
-        HashMap<String,Object> response = todoRepository.findAll(page,priority,state,search);
+        PaginatedResponse<Todo> response = new PaginatedResponse<>();
+        response.setContent(todos);
+        response.setPages(new Pages(totalPages, filter.getPage()));
+        response.setMetrics(todoRepository.getMetrics());
+        response.setTotalItems(totalItems);
+
         return response;
     }
 
     @Override
     public Optional<Todo> updateTodo(Long id, Todo todo) {
-        Optional<Todo> oldTodo = todoRepository.findById(id);
-        if (oldTodo.isPresent()) {
-            Todo older = oldTodo.get();
-            older.setPriority(todo.getPriority());
-            older.setText(todo.getText());
-            older.setDueDate(todo.getDueDate());
-            
-            return todoRepository.update(older);
+
+        Optional<Todo> existingTodo = todoRepository.findById(id);
+
+        if (existingTodo.isEmpty()) {
+            return Optional.empty();
         }
-        return null;
 
+        Todo updatedTodo = existingTodo.get();
+        updatedTodo.setPriority(todo.getPriority());
+        updatedTodo.setText(todo.getText());
+        updatedTodo.setDueDate(todo.getDueDate());
+
+        return todoRepository.update(updatedTodo);
     }
 
     @Override
-    public Todo deleteTodoById(Long id) {
-        return todoRepository.deleteById(id);
+    public Optional<Todo> deleteTodoById(Long id) {
+        Optional<Todo> todo = todoRepository.findById(id);
+
+        if (todo.isEmpty()) {
+            return Optional.empty();
+        }
+
+        todoRepository.deleteById(id);
+        return todo;
     }
 
     @Override
-    public Todo setDone(Long id) {
-        return todoRepository.setDone(id);
-    }
+    public Optional<Todo> updateTodoStatus(Long id, boolean done) {
+        Optional<Todo> todo = todoRepository.findById(id);
 
-    @Override
-    public Todo setUnDone(Long id) {
-        return todoRepository.setUnDone(id);
-    }
+        if (todo.isEmpty()) {
+            return Optional.empty();
+        }
 
+        Todo updatedTodo = todo.get();
+        updatedTodo.setDone(done);
+
+        return todoRepository.update(updatedTodo);
+    }
 }

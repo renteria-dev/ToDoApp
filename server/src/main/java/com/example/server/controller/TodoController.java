@@ -4,11 +4,14 @@
  */
 package com.example.server.controller;
 
+import com.example.server.model.PaginatedResponse;
 import com.example.server.model.Todo;
+import com.example.server.model.TodoFilter;
 import com.example.server.service.TodoServiceInterface;
-import java.util.HashMap;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -30,59 +33,93 @@ public class TodoController {
     }
 
     @GetMapping
-    public String getStatus() {
-        return "Server is running";
+    public ResponseEntity<String> getStatus() {
+        return ResponseEntity.ok("Server is running");
     }
 
     @GetMapping("/todos")
-    public HashMap<String, Object> getPage(
+    public ResponseEntity<PaginatedResponse<Todo>> getPage(
             @RequestParam("page") Optional<Integer> requestedPage,
             @RequestParam("priority") Optional<String> requestedPriority,
             @RequestParam("state") Optional<String> requestedState,
             @RequestParam("search") Optional<String> requestedSearch
     ) {
-        int page = (int) requestedPage.orElse(1);
-        String priority = (String) requestedPriority.orElse("ALL");
-        String state = (String) requestedState.orElse("ALL");
-        String search = (String) requestedSearch.orElse("");
-        HashMap<String, Object> response = todoService.getAllTodo(page,priority,state,search);
+        // Set Default values in case of null
+        int page = requestedPage.orElse(1);
+        String priority = requestedPriority.orElse("ALL");
+        String state = requestedState.orElse("ALL");
+        String search = requestedSearch.orElse("");
 
-        return response;
+        // Validate page to be positive
+        if (page <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        TodoFilter filter = new TodoFilter(page, priority, state, search);
+        PaginatedResponse<Todo> response = todoService.getAllTodo(filter);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/todos/{id}")
-    public Optional<Todo> getTodoById(@PathVariable Long id) {
-        return todoService.getTodoById(id);
+    public ResponseEntity<Todo> getTodoById(@PathVariable Long id) {
+        Optional<Todo> todo = todoService.getTodoById(id);
+        if (todo.isPresent()) {
+            return ResponseEntity.ok(todo.get());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping("/todos")
-    public Todo createTodo(@RequestBody Todo todo) {
-        
-        return todoService.createTodo(todo);
+    public ResponseEntity<Object> createTodo(@RequestBody Todo todo) {
+        // Validate the Todo input
+        if (todo.getText() == null || todo.getText().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Title is required.");
+        }
+
+        Todo createdTodo = todoService.createTodo(todo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTodo);
     }
 
     @PutMapping("/todos/{id}")
-    public Optional<Todo> updateTodo(@PathVariable Long id, @RequestBody Todo todo) {
-        return todoService.updateTodo(id, todo);
+    public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @RequestBody Todo todo) {
+        Optional<Todo> updatedTodo = todoService.updateTodo(id, todo);
+        if (updatedTodo.isPresent()) {
+            return ResponseEntity.ok(updatedTodo.get());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping("/todos/{id}/done")
-    public Todo updateTodoDone(@PathVariable Long id) {
+    public ResponseEntity<Todo> updateTodoDone(@PathVariable Long id) {
+        Optional<Todo> updatedTodo = todoService.updateTodoStatus(id, true);
 
-        return todoService.setDone(id);
-
+        if (updatedTodo.isPresent()) {
+            return ResponseEntity.ok(updatedTodo.get()); 
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); 
+        }
     }
 
     @PutMapping("/todos/{id}/undone")
-    public Todo updateTodoUnDone(@PathVariable Long id) {
+    public ResponseEntity<Todo> updateTodoUnDone(@PathVariable Long id) {
+        Optional<Todo> updatedTodo = todoService.updateTodoStatus(id, false);
 
-        return todoService.setUnDone(id);
-
+        if (updatedTodo.isPresent()) {
+            return ResponseEntity.ok(updatedTodo.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @DeleteMapping("/todos/{id}")
-    public Todo deleteTodoById(@PathVariable Integer id) {
-        return todoService.deleteTodoById(Long.valueOf(id));
+    public ResponseEntity<Void> deleteTodoById(@PathVariable Long id) {
+        Optional<Todo> deletedTodo = todoService.deleteTodoById(id);
+        if (deletedTodo != null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("/error")
