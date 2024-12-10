@@ -11,29 +11,34 @@ type DataContextType = {
   setRows: (rows: Todo[]) => void;
   pages: Page;
   setPages: (pages: Page) => void;
-  metrics:Metrics;
-  setMetrics:(metrics:Metrics)=>void;
+  metrics: Metrics;
+  setMetrics: (metrics: Metrics) => void;
   searchQuery: string;
   setSearchQuery: (text: string) => void;
   filterPriority: string;
   setFilterPriority: (text: string) => void;
   filterState: string;
   setFilterState: (text: string) => void;
-  updateData:boolean;
-  setUpdateData:(update:boolean)=>void;
+  updateData: boolean;
+  setUpdateData: (update: boolean) => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
 
 export const useData = () => {
-    const context = useContext(DataContext);
-    return context;
-  };
+  const context = useContext(DataContext);
+  return context;
+};
 
 export const DataContextProvider = ({ children }: DataContextProviderProps) => {
   const [rows, setRows] = useState<Todo[]>([]);
-  const [pages, setPages] = useState<Page>( {actualPage:1,totalPages:1});
-  const [metrics, setMetrics] = useState<Metrics>({average:"",averageHigh:"",averageMedium:"",averageLow:""});
+  const [pages, setPages] = useState<Page>({ actualPage: 1, totalPages: 1 });
+  const [metrics, setMetrics] = useState<Metrics>({
+    average: "",
+    averageHigh: "",
+    averageMedium: "",
+    averageLow: "",
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [filterPriority, setFilterPriority] = useState("ALL");
   const [filterState, setFilterState] = useState("ALL");
@@ -55,11 +60,9 @@ export const DataContextProvider = ({ children }: DataContextProviderProps) => {
         setFilterState,
         updateData,
         setUpdateData,
-
       }}
     >
       {children}
     </DataContext.Provider>
   );
 };
-
