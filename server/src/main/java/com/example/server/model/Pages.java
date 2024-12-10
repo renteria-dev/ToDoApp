@@ -5,36 +5,24 @@
 package com.example.server.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author luis.renteria
  */
-
+@Getter
+@Setter
 public class Pages {
+
     private int totalPages;
     private int actualPage;
-    
+
     @JsonCreator
     public Pages(int totalPages, int actualPage) {
         this.totalPages = totalPages;
         this.actualPage = actualPage;
     }
 
-    public int getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public int getActualPage() {
-        return actualPage;
-    }
-
-    public void setActualPage(int actualPage) {
-        this.actualPage = actualPage;
-    }
-    
 }
