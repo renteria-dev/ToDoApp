@@ -1,13 +1,13 @@
 import axios from "axios";
 import Todo from "../interfaces/Todo";
+import { serverURL } from "./config";
 
 const postTodoCreate = async (item: Todo) => {
   let response: Todo;
   try {
-    let query = `http://localhost:9090/api/v1/todos`;
+    let query = `${serverURL}/todos`;
     const { data } = await axios.post(query, item);
     response = data;
-    //console.log(response);
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {
