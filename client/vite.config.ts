@@ -13,5 +13,9 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: parseInt(env.VITE_APP_PORT || "3000", 10),
     },
+    test: {
+      globals: true,
+      environment: "jsdom",
+    },
   };
 });
