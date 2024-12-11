@@ -20,7 +20,6 @@ public class TodoFilter {
     private String state;
     private String search;
 
-    // Constructor
     public TodoFilter(int page, String priority, String state, String search) {
         this.page = page;
         this.priority = priority;
