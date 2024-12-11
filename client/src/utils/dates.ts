@@ -17,6 +17,11 @@ export const shortEnglishHumanizer = humanizeDuration.humanizer({
 });
 export const humanize = (seconds: string | null) => {
   const s = Number(seconds);
-  if (!Number.isNaN(s)) return shortEnglishHumanizer(s * 1000, { round: true });
+  if (s != null && !Number.isNaN(s) && !(Number(s) < 0))
+    return shortEnglishHumanizer(s * 1000, {
+      round: true,
+      delimiter: " ",
+      spacer: "",
+    });
   return "N/A";
 };
