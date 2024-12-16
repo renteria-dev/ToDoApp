@@ -1,36 +1,9 @@
-import Box from "@mui/material/Box";
-import { Pagination, Paper } from "@mui/material";
-import getTodos from "../api/getTodos";
-import { useData } from "../hooks/useData";
-import { useEffect, useState } from "react";
-function PaginationBox() {
-  const {
-    setMetrics,
-    pages,
-    setPages,
-    setRows,
-    updateData,
-    filterPriority,
-    filterState,
-    searchQuery,
-  } = useData();
-  const [clickedPage, setClickedPage] = useState<number>(1);
+import { Box, Pagination, Paper } from "@mui/material";
+import { usePagination } from "../hooks/usePagination";
 
-  useEffect(() => {
-    getTodos(clickedPage, filterPriority, filterState, searchQuery)
-      .then((response) => {
-        if (response) {
-          setPages(response.pages);
-          setRows(response.content);
-          setMetrics(response.metrics);
-        }
-      })
-      .catch(console.error);
-  }, [clickedPage, updateData, filterPriority, filterState]);
+export const PaginationBox = () => {
+  const { pages, clickedPage, handlePageChange } = usePagination();
 
-  const handleChange = async (_event: any, clickedPage: number) => {
-    setClickedPage(clickedPage);
-  };
   return (
     <Box
       sx={{
@@ -42,16 +15,15 @@ function PaginationBox() {
     >
       <Paper sx={{ padding: 0.5 }}>
         <Pagination
-          size={"large"}
+          size="large"
           count={pages.totalPages}
-          page={pages.actualPage}
-          onChange={handleChange}
-          variant={"outlined"}
-          shape={"rounded"}
+          page={clickedPage}
+          onChange={(_, page) => handlePageChange(page)}
+          variant="outlined"
+          shape="rounded"
           color="secondary"
         />
       </Paper>
     </Box>
   );
-}
-export default PaginationBox;
+};

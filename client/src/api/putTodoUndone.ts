@@ -1,8 +1,8 @@
 import axios from "axios";
-import Todo from "../interfaces/Todo";
+import { Todo } from "../interfaces/Todo";
 import { serverURL } from "./config";
 
-const putTodoUndone = async (id: number) => {
+export const putTodoUndone = async (id: number) => {
   let response: Todo;
   try {
     let query = `${serverURL}/todos/${id}/undone`;
@@ -17,5 +17,3 @@ const putTodoUndone = async (id: number) => {
     }
   }
 };
-
-export default putTodoUndone;

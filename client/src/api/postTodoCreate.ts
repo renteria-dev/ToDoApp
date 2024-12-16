@@ -1,8 +1,8 @@
 import axios from "axios";
-import Todo from "../interfaces/Todo";
+import { Todo } from "../interfaces/Todo";
 import { serverURL } from "./config";
 
-const postTodoCreate = async (item: Todo) => {
+export const postTodoCreate = async (item: Todo) => {
   let response: Todo;
   try {
     let query = `${serverURL}/todos`;
@@ -17,5 +17,3 @@ const postTodoCreate = async (item: Todo) => {
     }
   }
 };
-
-export default postTodoCreate;

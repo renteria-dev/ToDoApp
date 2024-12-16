@@ -1,8 +1,8 @@
 import axios from "axios";
-import ResponseProps from "../interfaces/ResponseProps";
+import { ResponseProps } from "../interfaces/ResponseProps";
 import { serverURL } from "./config";
 
-const getTodos = async (
+export const getTodos = async (
   page: number,
   priority: string,
   state: string,
@@ -36,5 +36,3 @@ const getTodos = async (
     }
   }
 };
-
-export default getTodos;

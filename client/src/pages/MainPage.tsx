@@ -1,9 +1,9 @@
-import TodoTable from "../components/TodoTable";
-import PaginationBox from "../components/PaginationBox";
-import MetricsBox from "../components/MetricsBox";
-import SearchBox from "../components/SearchBox";
+import { TodoTable } from "../components/TodoTable";
+import { PaginationBox } from "../components/PaginationBox";
+import { MetricsBox } from "../components/MetricsBox";
+import { SearchBox } from "../components/SearchBox";
 import { DataContextProvider } from "../hooks/useData";
-import CreateTodoButton from "../components/CreateTodoButton";
+import { CreateTodoButton } from "../components/CreateTodoButton";
 import { DialogContextProvider } from "../hooks/useDialog";
 import { SnackbarProvider } from "notistack";
 const MainPage = () => {

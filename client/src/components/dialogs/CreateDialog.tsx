@@ -18,8 +18,8 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useDialog } from "../../hooks/useDialog";
-import Todo from "../../interfaces/Todo";
-import postTodoCreate from "../../api/postTodoCreate";
+import { Todo } from "../../interfaces/Todo";
+import { postTodoCreate } from "../../api/postTodoCreate";
 import { useData } from "../../hooks/useData";
 import { useSnackbar } from "notistack";
 
@@ -43,7 +43,7 @@ function createData(
   };
 }
 
-function CreateDialog() {
+export function CreateDialog() {
   const { openCreate, setOpenCreate } = useDialog();
   const { updateData, setUpdateData } = useData();
   const { enqueueSnackbar } = useSnackbar();
@@ -188,20 +188,20 @@ function CreateDialog() {
           </FormControl>
         </DialogContent>
         <DialogActions>
+          <Button onClick={closeDialog} color="primary">
+            Cancel
+          </Button>
           <Button
+            variant="contained"
             onClick={() => {
               handleCreate();
             }}
             color="primary"
           >
-            Save changes
-          </Button>
-          <Button onClick={closeDialog} color="primary">
-            Cancel
+            Save
           </Button>
         </DialogActions>
       </Dialog>
     </>
   );
 }
-export default CreateDialog;

@@ -12,10 +12,10 @@ import {
   TableSortLabel,
 } from "@mui/material";
 
-import Todo from "../interfaces/Todo";
-import RemoveDialog from "./dialogs/RemoveDialog";
-import EditDialog from "./dialogs/EditDialog";
-import TodoRow from "./TodoRow";
+import { Todo } from "../interfaces/Todo";
+import { RemoveDialog } from "./dialogs/RemoveDialog";
+import { EditDialog } from "./dialogs/EditDialog";
+import { TodoRow } from "./TodoRow";
 import { useData } from "../hooks/useData";
 
 type Order = "asc" | "desc";
@@ -103,7 +103,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-const TodoTable = () => {
+export const TodoTable = () => {
   const { rows } = useData();
 
   const [order, setOrder] = useState<Order>("asc");
@@ -176,4 +176,3 @@ const TodoTable = () => {
     </Box>
   );
 };
-export default TodoTable;

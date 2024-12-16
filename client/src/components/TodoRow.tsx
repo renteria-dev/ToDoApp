@@ -1,4 +1,4 @@
-import Todo from "../interfaces/Todo";
+import { Todo } from "../interfaces/Todo";
 import { Edit, Delete } from "@mui/icons-material";
 import {
   TableRow,
@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { useDialog } from "../hooks/useDialog";
-import postTodoDone from "../api/postTodoDone";
-import putTodoUndone from "../api/putTodoUndone";
+import { postTodoDone } from "../api/postTodoDone";
+import { putTodoUndone } from "../api/putTodoUndone";
 import { useEffect, useState } from "react";
 import { useData } from "../hooks/useData";
 import { useSnackbar } from "notistack";
@@ -22,7 +22,7 @@ interface TodoRowProps {
   index: number;
 }
 
-const TodoRow = ({ row, index }: TodoRowProps) => {
+export const TodoRow = ({ row, index }: TodoRowProps) => {
   const { setSelectedItem, setOpenEdit, setOpenRemove } = useDialog();
   const { setUpdateData, updateData } = useData();
   const { enqueueSnackbar } = useSnackbar();
@@ -169,5 +169,3 @@ const TodoRow = ({ row, index }: TodoRowProps) => {
     </>
   );
 };
-
-export default TodoRow;

@@ -18,12 +18,12 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useDialog } from "../../hooks/useDialog";
-import putTodoEdit from "../../api/putTodoEdit";
-import Todo from "../../interfaces/Todo";
+import { putTodoEdit } from "../../api/putTodoEdit";
+import { Todo } from "../../interfaces/Todo";
 import { useData } from "../../hooks/useData";
 import { useSnackbar } from "notistack";
 
-function createData(
+export function createData(
   id: number,
   text: string,
   priority: string,
@@ -43,7 +43,7 @@ function createData(
   };
 }
 
-function EditDialog() {
+export function EditDialog() {
   const { openEdit, selectedItem, setSelectedItem, setOpenEdit } = useDialog();
   const { updateData, setUpdateData } = useData();
   const { enqueueSnackbar } = useSnackbar();
@@ -178,4 +178,3 @@ function EditDialog() {
     </>
   );
 }
-export default EditDialog;

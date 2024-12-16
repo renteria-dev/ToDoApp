@@ -7,12 +7,12 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useDialog } from "../../hooks/useDialog";
-import Todo from "../../interfaces/Todo";
-import deleteTodo from "../../api/deleteTodo";
+import { Todo } from "../../interfaces/Todo";
+import { deleteTodo } from "../../api/deleteTodo";
 import { useData } from "../../hooks/useData";
 import { useSnackbar } from "notistack";
 
-function RemoveDialog() {
+export function RemoveDialog() {
   const { openRemove, selectedItem, setSelectedItem, setOpenRemove } =
     useDialog();
   const { updateData, setUpdateData } = useData();
@@ -61,5 +61,3 @@ function RemoveDialog() {
     </>
   );
 }
-
-export default RemoveDialog;

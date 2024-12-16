@@ -17,7 +17,7 @@ interface CustomSearchBarProps {
   disabled?: boolean;
   debounceTime?: number;
 }
-const CustomSearchBar: React.FC<CustomSearchBarProps> = ({
+export const CustomSearchBar: React.FC<CustomSearchBarProps> = ({
   id,
   value,
   label,
@@ -76,6 +76,7 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({
           endAdornment: (
             <InputAdornment position="end">
               <ButtonBase
+                aria-label="clear"
                 onClick={clearSearch}
                 disabled={searchValue ? false : true}
                 sx={{
@@ -97,4 +98,3 @@ const CustomSearchBar: React.FC<CustomSearchBarProps> = ({
     </>
   );
 };
-export default CustomSearchBar;

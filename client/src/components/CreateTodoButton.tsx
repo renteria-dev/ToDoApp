@@ -1,9 +1,9 @@
-import CreateDialog from "./dialogs/CreateDialog";
+import { CreateDialog } from "./dialogs/CreateDialog";
 import { Add } from "@mui/icons-material";
 import { Box, Button } from "@mui/material";
 import { useDialog } from "../hooks/useDialog";
 
-const CreateTodoButton = () => {
+export const CreateTodoButton = () => {
   const { setOpenCreate, openCreate } = useDialog();
   const openCreateDialog = () => {
     setOpenCreate(true);
@@ -30,5 +30,3 @@ const CreateTodoButton = () => {
     </>
   );
 };
-
-export default CreateTodoButton;

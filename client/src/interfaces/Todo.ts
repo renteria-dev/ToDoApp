@@ -1,4 +1,4 @@
-interface Todo {
+export interface Todo {
   id: number | null;
   text: string;
   priority: string;
@@ -6,5 +6,4 @@ interface Todo {
   done: boolean;
   dueDate: string | null;
   doneDate: string | null;
-} 
-export default Todo;
+}

@@ -2,7 +2,7 @@ import { Box, Divider, Typography } from "@mui/material";
 import { useData } from "../hooks/useData";
 import { humanize } from "../utils/dates";
 
-const MetricsBox = () => {
+export const MetricsBox = () => {
   const { metrics } = useData();
 
   return (
@@ -35,5 +35,3 @@ const MetricsBox = () => {
     </Box>
   );
 };
-
-export default MetricsBox;

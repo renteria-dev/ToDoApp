@@ -10,10 +10,10 @@ import {
   Paper,
 } from "@mui/material";
 import { Restore, Send } from "@mui/icons-material";
-import CustomSearchBar from "./CustomSearchBar";
+import { CustomSearchBar } from "./CustomSearchBar";
 import { useData } from "../hooks/useData";
 
-const SearchBox = () => {
+export const SearchBox = () => {
   const resetFilters = () => {
     setFilterPriority("ALL");
     setFilterState("ALL");
@@ -127,5 +127,3 @@ const SearchBox = () => {
     </Box>
   );
 };
-
-export default SearchBox;
