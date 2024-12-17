@@ -57,7 +57,7 @@ export const TodoRow = ({ row, index }: TodoRowProps) => {
             enqueueSnackbar(e.message, { variant: "error" });
             //console.log(e);
 
-            console.error;
+            console.error(e);
           });
       }
     } else {
@@ -75,7 +75,7 @@ export const TodoRow = ({ row, index }: TodoRowProps) => {
             enqueueSnackbar(e, { variant: "error" });
             //console.log(e);
 
-            console.error;
+            console.error(e);
           });
       }
     }
@@ -103,7 +103,7 @@ export const TodoRow = ({ row, index }: TodoRowProps) => {
   return (
     <>
       <TableRow
-        role="checkbox"
+        role="row"
         tabIndex={-1}
         key={row.id}
         sx={{
@@ -136,9 +136,7 @@ export const TodoRow = ({ row, index }: TodoRowProps) => {
             textWrap: "nowrap",
           }}
         >
-          &nbsp;
           {row.text}
-          &nbsp;
         </TableCell>
         <TableCell align="center">{row.priority}</TableCell>
         <TableCell align="center">

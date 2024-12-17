@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
-import {Todo} from "../interfaces/Todo";
-import {Page} from "../interfaces/Page";
-import {Metrics} from "../interfaces/Metrics";
+import { Todo } from "../interfaces/Todo";
+import { Page } from "../interfaces/Page";
+import { Metrics } from "../interfaces/Metrics";
 type DataContextProviderProps = {
   children: React.ReactNode;
 };

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import Todo from "../interfaces/Todo";
+import { Todo } from "../interfaces/Todo";
 
 type DialogContextProviderProps = {
   children: React.ReactNode;
