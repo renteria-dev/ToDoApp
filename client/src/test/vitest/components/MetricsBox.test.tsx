@@ -1,14 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { useData } from "../hooks/useData";
-import { MetricsBox } from "../components/MetricsBox";
+import { useData } from "../../../hooks/useData";
+import { MetricsBox } from "../../../components/MetricsBox";
 
 import "@testing-library/jest-dom";
-import { Metrics } from "../interfaces/Metrics";
+import { Metrics } from "../../../interfaces/Metrics";
 // NOTE: jest-dom adds handy assertions to Jest and is recommended, but not required
 
 // Mock the dependencies
-vi.mock("../hooks/useData");
+vi.mock("../../../hooks/useData");
 
 describe("MetricsBox Component", () => {
   const mockMetrics:Metrics = {

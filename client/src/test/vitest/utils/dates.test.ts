@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { humanize } from "../utils/dates";
+import { humanize } from "../../../utils/dates";
 
 describe("humanize", () => {
   it("should format valid seconds input correctly", () => {

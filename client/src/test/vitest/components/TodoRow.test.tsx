@@ -1,17 +1,16 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import { postTodoDone } from "../api/postTodoDone";
-import { putTodoUndone } from "../api/putTodoUndone";
-import { TodoRow } from "../components/TodoRow";
-import { Todo } from "../interfaces/Todo";
-
+import { postTodoDone } from "../../../api/postTodoDone";
+import { putTodoUndone } from "../../../api/putTodoUndone";
+import { TodoRow } from "../../../components/TodoRow";
+import { Todo } from "../../../interfaces/Todo";
 import "@testing-library/jest-dom";
 // NOTE: jest-dom adds handy assertions to Jest and is recommended, but not required
 
 // Mock dependencies
-vi.mock("../api/postTodoDone");
-vi.mock("../api/putTodoUndone");
-vi.mock("../hooks/useDialog", () => ({
+vi.mock("../../../api/postTodoDone");
+vi.mock("../../../api/putTodoUndone");
+vi.mock("../../../hooks/useDialog", () => ({
   useDialog: () => ({
     setSelectedItem: vi.fn(),
     setOpenEdit: vi.fn(),
@@ -19,7 +18,7 @@ vi.mock("../hooks/useDialog", () => ({
   }),
 }));
 
-vi.mock("../hooks/useData", () => ({
+vi.mock("../../../hooks/useData", () => ({
   useData: () => ({
     setUpdateData: vi.fn(),
     updateData: false,

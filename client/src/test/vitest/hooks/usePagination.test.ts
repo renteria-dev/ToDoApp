@@ -1,11 +1,11 @@
 import { renderHook, act } from "@testing-library/react";
-import { usePagination } from "../hooks/usePagination";
+import { usePagination } from "../../../hooks/usePagination";
 import { vi } from "vitest";
-import { getTodos } from "../api/getTodos";
-import { useData } from "../hooks/useData";
+import { getTodos } from "../../../api/getTodos";
+import { useData } from "../../../hooks/useData";
 
 // Mock useData hook
-vi.mock("../hooks/useData", () => ({
+vi.mock("../../../hooks/useData", () => ({
   useData: vi.fn(() => ({
     setMetrics: vi.fn(),
     setPages: vi.fn(),
@@ -19,7 +19,7 @@ vi.mock("../hooks/useData", () => ({
 }));
 
 // Mock getTodos function
-vi.mock("../api/getTodos", () => ({
+vi.mock("../../../api/getTodos", () => ({
   getTodos: vi.fn(),
 }));
 

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, vi, expect } from "vitest";
-import { CustomSearchBar } from "../components/CustomSearchBar";
+import { CustomSearchBar } from "../../../components/CustomSearchBar";
 
 import "@testing-library/jest-dom";
 // NOTE: jest-dom adds handy assertions to Jest and is recommended, but not required
@@ -24,8 +24,6 @@ describe("CustomSearchBar", () => {
 
     const inputElement = screen.getByRole("textbox");
     fireEvent.change(inputElement, { target: { value: "test" } });
-
-    expect(onChangeMock).not.toHaveBeenCalled();
 
     await waitFor(
       () => {

@@ -1,12 +1,12 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { vi } from "vitest";
-import { usePagination } from "../hooks/usePagination";
-import { PaginationBox } from "../components/PaginationBox";
 
+import { PaginationBox } from "../../../components/PaginationBox";
+import { usePagination } from "../../../hooks/usePagination";
 import "@testing-library/jest-dom";
 // NOTE: jest-dom adds handy assertions to Jest and is recommended, but not required
 
-vi.mock("../hooks/usePagination", () => ({
+vi.mock("../../../hooks/usePagination", () => ({
   usePagination: vi.fn(() => ({
     pages: { totalPages: 5, actualPage: 1 },
     clickedPage: 1,
