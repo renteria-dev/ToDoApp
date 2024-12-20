@@ -32,7 +32,7 @@ export const getTodos = async (
     if (axios.isAxiosError(error)) {
       throw error;
     } else {
-      throw new Error("different error than axios");
+      throw error;
     }
   }
 };

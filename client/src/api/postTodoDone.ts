@@ -13,7 +13,7 @@ export const postTodoDone = async (id: number) => {
     if (axios.isAxiosError(error)) {
       throw error;
     } else {
-      throw new Error("different error than axios");
+      throw error;
     }
   }
 };

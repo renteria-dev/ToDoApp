@@ -13,7 +13,7 @@ export const putTodoEdit = async (id: number, item: Todo) => {
     if (axios.isAxiosError(error)) {
       throw error;
     } else {
-      throw new Error("different error than axios");
+      throw error;
     }
   }
 };
