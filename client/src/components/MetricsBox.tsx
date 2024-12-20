@@ -1,12 +1,13 @@
+// components/MetricsBox.tsx
 import { Box, Divider, Typography } from "@mui/material";
-import { useData } from "../hooks/useData";
-import { humanize } from "../utils/dates";
+import { useMetrics } from "../hooks/useMetrics";
 
 export const MetricsBox = () => {
-  const { metrics } = useData();
+  const { formattedMetrics } = useMetrics();
 
   return (
     <Box
+      data-testid="metrics-box"
       sx={{
         display: "flex",
         padding: "1rem",
@@ -14,23 +15,24 @@ export const MetricsBox = () => {
         border: "1px solid",
         borderColor: "divider",
         borderRadius: 2,
-        bgcolor: "background.paper",
+        bgcolor: "background.default",
         color: "text.secondary",
-        "& svg": {
-          m: 1,
-        },
       }}
     >
+      {/* Average Time to Finish Tasks */}
       <Box width={"100%"}>
         <Typography>Average time to finish tasks:</Typography>
-        <Typography>{humanize(metrics.average)}</Typography>
+        <Typography>{formattedMetrics.average}</Typography>
       </Box>
+
       <Divider orientation="vertical" variant="middle" flexItem />
+
+      {/* Average Time to Finish Tasks by Priority */}
       <Box width={"100%"}>
         <Typography>Average time to finish tasks by priority:</Typography>
-        <Typography>Low: {humanize(metrics.averageLow)}</Typography>
-        <Typography>Medium: {humanize(metrics.averageMedium)}</Typography>
-        <Typography>High: {humanize(metrics.averageHigh)}</Typography>
+        <Typography>Low: {formattedMetrics.averageLow}</Typography>
+        <Typography>Medium: {formattedMetrics.averageMedium}</Typography>
+        <Typography>High: {formattedMetrics.averageHigh}</Typography>
       </Box>
     </Box>
   );

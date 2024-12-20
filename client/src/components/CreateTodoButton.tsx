@@ -14,13 +14,13 @@ export const CreateTodoButton = () => {
       <Box paddingTop={2} />
 
       <Button
+        data-testid="create-todo-button"
         color={"secondary"}
         variant={"contained"}
         startIcon={<Add />}
         sx={{
           borderRadius: "8px 8px 0 0",
           fontWeight: "bold",
-          // boxShadow: "none",
         }}
         onClick={openCreateDialog}
       >

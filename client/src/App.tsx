@@ -9,7 +9,7 @@ import "./App.css";
 import { Button, CssBaseline, GlobalStyles } from "@mui/material";
 import { InvertColors } from "@mui/icons-material";
 
-function MyApp() {
+export function MyApp() {
   const { mode, setMode } = useColorScheme();
 
   return (
@@ -52,7 +52,7 @@ function MyApp() {
   );
 }
 
-const theme = createTheme({
+export const theme = createTheme({
   colorSchemes: {
     dark: true,
   },

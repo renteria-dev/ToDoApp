@@ -6,6 +6,7 @@ export const PaginationBox = () => {
 
   return (
     <Box
+      data-testid="pagination-box"
       sx={{
         margin: "auto",
         width: "fit-content",

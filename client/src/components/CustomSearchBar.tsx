@@ -1,100 +1,106 @@
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import {
+  ButtonBase,
+  InputAdornment,
+  TextField,
+  TextFieldProps,
+} from "@mui/material";
+import { Clear as ClearIcon, SearchRounded, MoreHoriz } from "@mui/icons-material";
 
-import { ButtonBase, InputAdornment, TextField } from "@mui/material";
-import { ClearIcon } from "@mui/x-date-pickers";
-import { SearchRounded } from "@mui/icons-material";
-
-interface CustomSearchBarProps {
-  id?: string;
+// Props Interface
+interface CustomSearchBarProps extends Omit<TextFieldProps, "onChange"> {
   value?: string;
-  label?: string;
-  placeholder?: string;
-  //onChange?: ChangeEventHandler<HTMLInputElement>;
   onChange?: (input: string) => void;
-  //onCancelSearch?: MouseEventHandler<HTMLButtonElement>;
   onCancelSearch?: () => void;
-  autoComplete?: string;
-  disabled?: boolean;
   debounceTime?: number;
 }
+
+// Debounce Hook
+const useDebounce = (value: string, delay: number): string => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
+// Component
 export const CustomSearchBar: React.FC<CustomSearchBarProps> = ({
   id,
-  value,
+  value = "",
   label,
   placeholder,
   onChange,
   onCancelSearch,
   autoComplete,
   disabled,
-  debounceTime,
+  debounceTime = 300,
+  ...textFieldProps
 }) => {
-  const [searchValue, setSearchValue] = React.useState(value || "");
-  const [dbTime] = React.useState(debounceTime || 0);
-  const clearSearch = () => {
+  const [searchValue, setSearchValue] = useState<string>(value);
+
+  // Debounced search value
+  const debouncedSearchValue = useDebounce(searchValue, debounceTime);
+
+  // Clear Search
+  const clearSearch = useCallback(() => {
     setSearchValue("");
-    if (onCancelSearch) {
-      onCancelSearch();
-    }
-  };
+    onCancelSearch?.();
+  }, [onCancelSearch]);
 
-  const changeValue = (searchValue: any) => {
-    setSearchValue(searchValue);
-  };
-  React.useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (onChange) {
-        onChange(searchValue);
-      }
-    }, dbTime);
-    return () => clearTimeout(timeoutId);
-  }, [searchValue, dbTime]);
+  // Notify parent on debounced value change
+  useEffect(() => {
+    if (onChange) onChange(debouncedSearchValue);
+  }, [debouncedSearchValue, onChange]);
+
+  // Handle input change
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setSearchValue(e.target.value),
+    []
+  );
+
   return (
-    <>
-      <TextField
-        size="small"
-        sx={{ width: { xs: "100%" } }}
-        disabled={disabled}
-        id={id}
-        label={label}
-        placeholder={placeholder}
-        value={searchValue}
-        onChange={(e) => changeValue(e.target.value)}
-        autoComplete={autoComplete}
-        onKeyDown={(event) => {
-          //console.log(event);
-
-          if (event.key === "Enter") {
-            //console.log("enter key was pressed");
-          }
-        }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchRounded />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end">
-              <ButtonBase
-                aria-label="clear"
-                onClick={clearSearch}
-                disabled={searchValue ? false : true}
-                sx={{
-                  borderRadius: "12px",
-                  padding: "5px",
-                  marginRight: "-5px",
-                }}
-              >
-                {searchValue.trim() !== "" ? (
-                  <ClearIcon />
-                ) : (
-                  <ClearIcon htmlColor="rgba(0,0,0,0)" />
-                )}
-              </ButtonBase>
-            </InputAdornment>
-          ),
-        }}
-      />
-    </>
+    <TextField
+      data-testid="custom-search-bar"
+      {...textFieldProps}
+      id={id}
+      size="small"
+      label={label}
+      placeholder={placeholder}
+      value={searchValue}
+      onChange={handleInputChange}
+      disabled={disabled}
+      autoComplete={autoComplete}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <SearchRounded />
+          </InputAdornment>
+        ),
+        endAdornment: (
+          <InputAdornment position="end">
+            <ButtonBase
+              aria-label="clear"
+              onClick={clearSearch}
+              disabled={!searchValue}
+              sx={{
+                borderRadius: "12px",
+                padding: "5px",
+                marginRight: "-5px",
+              }}
+            >
+              {searchValue.trim() ? (
+                <ClearIcon />
+              ) : (
+                <MoreHoriz htmlColor="rgba(0,0,0,0.2)" /> // Placeholder Icon
+              )}
+            </ButtonBase>
+          </InputAdornment>
+        ),
+      }}
+    />
   );
 };

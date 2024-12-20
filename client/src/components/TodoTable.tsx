@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import {
   Box,
   Paper,
@@ -11,162 +9,70 @@ import {
   TableRow,
   TableSortLabel,
 } from "@mui/material";
-
 import { Todo } from "../interfaces/Todo";
-import { RemoveDialog } from "./dialogs/RemoveDialog";
-import { EditDialog } from "./dialogs/EditDialog";
 import { TodoRow } from "./TodoRow";
+import { EditDialog } from "./dialogs/EditDialog";
+import { RemoveDialog } from "./dialogs/RemoveDialog";
 import { useData } from "../hooks/useData";
+import { useTodoTable } from "../hooks/useTodoTable";
 
-type Order = "asc" | "desc";
-
-interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Todo;
-  label: string;
-  numeric: boolean;
-}
-
-const headCells: readonly HeadCell[] = [
-  {
-    id: "done",
-    numeric: false,
-    disablePadding: true,
-    label: "Done",
-  },
-  {
-    id: "text",
-    numeric: false,
-    disablePadding: true,
-    label: "Name",
-  },
-  {
-    id: "priority",
-    numeric: false,
-    disablePadding: false,
-    label: "Priority",
-  },
-  {
-    id: "dueDate",
-    numeric: false,
-    disablePadding: false,
-    label: "Due Date",
-  },
-];
-
-interface EnhancedTableProps {
-  numSelected: number;
+interface TodoTableViewProps {
+  rows: Todo[];
+  order: "asc" | "desc";
+  orderBy: keyof Todo;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof Todo
+    property: keyof Todo,
+    order: "asc" | "desc"
   ) => void;
-  order: Order;
-  orderBy: string;
-  rowCount: number;
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const { order, orderBy, onRequestSort } = props;
-  const createSortHandler =
-    (property: keyof Todo) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property);
-    };
-
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell align="center"></TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? "center" : "center"}
-            padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {/* {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
-              ) : null} */}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-        <TableCell align="center">Actions</TableCell>
-      </TableRow>
-    </TableHead>
-  );
-}
-
-export const TodoTable = () => {
-  const { rows } = useData();
-
-  const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<keyof Todo>("creationDate");
-  const [selected] = useState<readonly number[]>([]);
-
-  const handleRequestSort = (
-    _event: React.MouseEvent<unknown>,
-    property: keyof Todo
-  ) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
+export const TodoTableView = ({
+  rows,
+  order,
+  orderBy,
+  onRequestSort,
+}: TodoTableViewProps) => {
   const emptyRows = 10 - rows.length;
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box data-testid="todo-table" sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%" }} elevation={3}>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size={"small"}
+            size="small"
           >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
+            <TableHead>
+              <TableRow>
+                <TableCell align="center"></TableCell>
+                {["done", "text", "priority", "dueDate"].map((head) => (
+                  <TableCell key={head} align="center">
+                    <TableSortLabel
+                      active={orderBy === head}
+                      direction={orderBy === head ? order : "asc"}
+                      onClick={(e) => onRequestSort(e, head as keyof Todo, order)}
+                    >
+                      {head.charAt(0).toUpperCase() + head.slice(1)}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+                <TableCell align="center">Actions</TableCell>
+              </TableRow>
+            </TableHead>
             <TableBody>
-              {rows.map((row: Todo, index: number) => (
+              {rows.map((row, index) => (
                 <TodoRow key={row.id} row={row} index={index} />
               ))}
-
               <EditDialog />
               <RemoveDialog />
 
-              {emptyRows == 10 && (
-                <TableRow
-                  style={{
-                    height: 50 * 3,
-                  }}
-                >
-                  <TableCell
-                    colSpan={6}
-                    align="center"
-                    sx={{ fontSize: "1.5rem" }}
-                  >
-                    Empty
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 50 * emptyRows }}>
+                  <TableCell colSpan={6} align="center">
+                    {rows.length === 0 ? "Empty" : null}
                   </TableCell>
-                </TableRow>
-              )}
-              {emptyRows < 10 && (
-                <TableRow
-                  style={{
-                    height: 50.5 * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6}></TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -174,5 +80,27 @@ export const TodoTable = () => {
         </TableContainer>
       </Paper>
     </Box>
+  );
+};
+
+export const TodoTable = () => {
+  const { rows } = useData();
+  const { order, orderBy, handleRequestSort, sortedRows } = useTodoTable(rows);
+
+  const handleRequestSortWithProperty = (
+    event: React.MouseEvent<unknown>,
+    property: keyof Todo,
+    order: "asc" | "desc"
+  ) => {
+    handleRequestSort(event, property, order as keyof Todo);
+  };
+
+  return (
+    <TodoTableView
+      rows={sortedRows}
+      order={order}
+      orderBy={orderBy}
+      onRequestSort={handleRequestSortWithProperty}
+    />
   );
 };
